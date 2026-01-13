@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://social-ify.vercel.app/api/display?breakpoints=768&description=A%20Powerful%20Three-End%20Full-stack%20Blog%20System&font=Inter&language=zh&name=D.Will%20Blog&owner=AVIDS2&pattern=Circuit%20Board&theme=Light" alt="Banner" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text=D.Will%20Blog&fontSize=70&animation=fadeIn&fontAlignY=35" alt="Banner" />
 
   <h1>🌸 D.Will Blog</h1>
 
