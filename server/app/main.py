@@ -1,7 +1,8 @@
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from app.database import init_db, async_session
@@ -79,10 +80,22 @@ app.include_router(friends.router, prefix="/api", tags=["友链"])
 # 获取项目根目录 (Docker 环境下为 /app)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# 静态文件服务（管理后台）
+# 静态文件服务（管理后台）- 支持 Vue SPA 路由
 admin_dist = os.path.join(BASE_DIR, "static", "admin")
+admin_index = os.path.join(admin_dist, "index.html")
+
 if os.path.exists(admin_dist):
-    app.mount("/admin", StaticFiles(directory=admin_dist, html=True), name="admin")
+    # 挂载管理后台静态资源（CSS、JS 等）
+    app.mount("/admin/assets", StaticFiles(directory=os.path.join(admin_dist, "assets")), name="admin_assets")
+    
+    # Vue SPA 路由 fallback：所有 /admin/* 请求都返回 index.html
+    @app.get("/admin/{full_path:path}")
+    async def admin_spa(full_path: str):
+        return FileResponse(admin_index)
+    
+    @app.get("/admin")
+    async def admin_root():
+        return FileResponse(admin_index)
 else:
     print(f"⚠️ 警告: 未找到管理后台目录: {admin_dist}")
 
