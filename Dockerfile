@@ -61,6 +61,7 @@ COPY server/app ./app
 COPY --from=frontend-builder /app/client/dist ./client/dist
 
 # 从构建阶段复制管理后台构建产物
+# 注意：在 admin-builder 阶段，WORKDIR 是 /app/admin，所以产物在 /app/admin/dist
 COPY --from=admin-builder /app/admin/dist ./static/admin
 
 # 复制前端静态资源（Banner 图片等）
