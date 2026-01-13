@@ -72,6 +72,7 @@ app.include_router(tools.router, tags=["工具收藏"])
 app.include_router(albums.router, tags=["相册"])
 app.include_router(about.router, prefix="/api/admin", tags=["关于页面"])
 app.include_router(banner.router, prefix="/api/admin", tags=["Banner管理"])
+app.include_router(banner.router, prefix="/api", tags=["Banner公开接口"])  # 公开接口
 
 
 # 静态文件服务（管理后台）

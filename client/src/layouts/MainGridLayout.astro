@@ -58,6 +58,26 @@ interface Props {
 
 // 获取banner图片的辅助函数
 const getBannerImages = async () => {
+	// 优先从后端 API 获取动态 Banner 图片列表
+	try {
+		const API_BASE = import.meta.env.DEV 
+			? 'http://localhost:8000' 
+			: '';
+		const response = await fetch(`${API_BASE}/api/banner/public`);
+		if (response.ok) {
+			const data = await response.json();
+			if (data.desktop?.length > 0 || data.mobile?.length > 0) {
+				return {
+					desktop: data.desktop?.map((f: string) => `/assets/desktop-banner/${f}`) || [],
+					mobile: data.mobile?.map((f: string) => `/assets/mobile-banner/${f}`) || [],
+				};
+			}
+		}
+	} catch (error) {
+		console.warn("Failed to fetch banners from API, using config fallback:", error);
+	}
+
+	// 回退到配置文件中的静态配置
 	let bannerSrc = siteConfig.banner.src;
 
 	// 如果启用了图片API，获取API图片

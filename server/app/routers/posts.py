@@ -308,3 +308,21 @@ async def get_stats(db: AsyncSession = Depends(get_db)):
         "comments": comments_count.scalar(),
         "views": total_views.scalar() or 0
     }
+
+
+@router.get("/calendar-data.json")
+async def get_calendar_data(db: AsyncSession = Depends(get_db)):
+    """获取日历数据（文章发布日期列表）"""
+    result = await db.execute(
+        select(Post).where(Post.is_published == True).order_by(Post.created_at.desc())
+    )
+    posts = result.scalars().all()
+    
+    return [
+        {
+            "id": post.slug,
+            "title": post.title,
+            "date": post.created_at.strftime("%Y-%m-%d")
+        }
+        for post in posts
+    ]

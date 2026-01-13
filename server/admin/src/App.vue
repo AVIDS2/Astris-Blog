@@ -374,6 +374,19 @@ body {
   .content-wrapper {
     padding: 16px;
   }
+  
+  /* 修复移动端导航栏重叠 */
+  .app-header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1000 !important;
+  }
+  
+  .main-content-area {
+    margin-top: 60px !important;
+  }
 }
 
 /* 页面过渡 */

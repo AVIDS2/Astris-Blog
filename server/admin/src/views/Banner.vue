@@ -109,8 +109,8 @@ onMounted(fetchBanners)
       <div class="banner-grid" v-if="currentBanners.length > 0">
         <div v-for="filename in currentBanners" :key="filename" class="banner-card">
           <div class="banner-preview">
-            <img 
-              :src="`${API_BASE}${bannerBasePath}${filename}`" 
+          <img 
+              :src="`${API_BASE}/api/admin/banner/thumbnail/${activeTab}/${filename}`" 
               :alt="filename"
               loading="lazy"
               decoding="async"

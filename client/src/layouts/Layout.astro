@@ -684,20 +684,35 @@ function disableAnimation() {
 
 			const carousel = document.getElementById("banner-carousel");
 
-			// 切换图片的函数 - 基于有效项目
+			// 切换图片的函数 - 使用交叉淡入淡出
 			function switchToSlide(index: number) {
-				// 隐藏当前图片
-				const currentItem = validItems[currentIndex];
-				currentItem.classList.remove("opacity-100", "scale-100");
-				currentItem.classList.add("opacity-0", "scale-[1.05]");
-
-				// 更新索引
-				currentIndex = index;
-
-				// 显示新图片
-				const nextItem = validItems[currentIndex];
+				if (index === currentIndex) return;
+				
+				const currentItem = validItems[currentIndex] as HTMLElement;
+				const nextItem = validItems[index] as HTMLElement;
+				
+				// 确保下一张图片在当前图片下方（z-index）
+				currentItem.style.zIndex = '2';
+				nextItem.style.zIndex = '1';
+				
+				// 先让下一张图片可见（但还是透明的）
 				nextItem.classList.add("opacity-100", "scale-100");
 				nextItem.classList.remove("opacity-0", "scale-[1.05]");
+				
+				// 稍微延迟后再淡出当前图片，实现交叉淡入淡出
+				requestAnimationFrame(() => {
+					currentItem.classList.remove("opacity-100", "scale-100");
+					currentItem.classList.add("opacity-0", "scale-[1.05]");
+				});
+				
+				// 更新索引
+				currentIndex = index;
+				
+				// 过渡完成后重置 z-index
+				setTimeout(() => {
+					currentItem.style.zIndex = '';
+					nextItem.style.zIndex = '';
+				}, 1300); // 略大于 CSS 过渡时间 1.2s
 			}
 
 			// 初始化：隐藏所有图片，只显示第一张有效图片
