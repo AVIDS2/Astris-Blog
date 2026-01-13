@@ -15,10 +15,6 @@ const currentBanners = computed(() =>
   activeTab.value === 'desktop' ? desktopBanners.value : mobileBanners.value
 )
 
-const bannerBasePath = computed(() => 
-  activeTab.value === 'desktop' ? '/assets/desktop-banner/' : '/assets/mobile-banner/'
-)
-
 async function fetchBanners() {
   loading.value = true
   try {
