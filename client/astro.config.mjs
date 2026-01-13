@@ -38,10 +38,10 @@ export default defineConfig({
 		port: 4321,
 	},
 
-	output: "server",
-	adapter: node({
-		mode: "standalone"
-	}),
+	output: "static",
+	// adapter: node({
+	// 	mode: "standalone"
+	// }),
 
 	integrations: [
 		tailwind({

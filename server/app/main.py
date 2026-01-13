@@ -101,7 +101,7 @@ if os.path.exists(client_public_images):
     app.mount("/images", StaticFiles(directory=client_public_images), name="images")
 
 # 静态文件服务（博客前端）- 这是最后的兜底处理，负责主页渲染
-client_dist = os.path.join(BASE_DIR, "client", "dist", "client")
+client_dist = os.path.join(BASE_DIR, "client", "dist")
 if os.path.exists(client_dist):
     app.mount("/", StaticFiles(directory=client_dist, html=True), name="client")
 else:
