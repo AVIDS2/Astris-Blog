@@ -1,7 +1,7 @@
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text=D.Will%20Blog&fontSize=70&animation=fadeIn&fontAlignY=35" alt="Banner" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=auto&height=200&section=header&text=Astris%20Blog&fontSize=70&animation=fadeIn&fontAlignY=35" alt="Banner" />
 
-  <h1>🌸 D.Will Blog</h1>
+  <h1>🌸 Astris Blog</h1>
 
   <p><b>一个真正的三端全栈博客系统</b><br/>
   集成 <b>极致体验的博客端</b> + <b>移动优先的管理端</b> + <b>高性能后端 API</b></p>

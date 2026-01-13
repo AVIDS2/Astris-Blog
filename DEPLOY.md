@@ -1,4 +1,4 @@
-# 🚀 D.Will Blog 部署指南
+# 🚀 Astris Blog 部署指南
 
 ## 环境信息
 - **主域名**: `dwill.top` (Cloudflare 转发)
@@ -35,7 +35,7 @@ copy .env.example .env
 SECRET_KEY=your-random-secret-key-here
 
 # 管理员密码 (用于登录后台)
-ADMIN_USERNAME=admin
+ADMIN_USERNAME=avids2
 ADMIN_PASSWORD=your-secure-password
 
 # 生产环境 CORS 配置 (非常重要，否则后台无法调接口)
@@ -66,7 +66,7 @@ docker-compose up -d --build
 ```bash
 docker ps
 ```
-你应该能看到名为 `dwill-blog` 的容器，状态为 `Up`。
+你应该能看到名为 `astris-blog` 的容器，状态为 `Up`。
 
 ---
 
@@ -75,6 +75,7 @@ docker ps
 在你的 `CaddyFile` 中，将之前测试用的 9990 替换为我们的博客端口 9527：
 
 ```caddy
+# Astris Blog
 blog.dwill.top:7777 {
     reverse_proxy localhost:9527
 }

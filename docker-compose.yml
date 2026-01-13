@@ -10,7 +10,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: dwill-blog
+    container_name: astris-blog
     restart: unless-stopped
     ports:
       # 使用 9527 端口避免与其他服务冲突
@@ -27,7 +27,7 @@ services:
       - ./client/public/images:/app/client/public/images
     environment:
       # 应用配置
-      - APP_NAME=${APP_NAME:-D.Will Blog}
+      - APP_NAME=${APP_NAME:-Astris Blog}
       - DEBUG=${DEBUG:-false}
 
       # 数据库 (容器内路径)
