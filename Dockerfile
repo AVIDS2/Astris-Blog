@@ -69,6 +69,9 @@ COPY client/public/images ./client/public/images
 # 创建数据目录（用于 SQLite 和上传文件）
 RUN mkdir -p /app/data /app/uploads/photos/thumbnails
 
+# 创建启动脚本（避免 Windows CRLF 问题）
+RUN printf '#!/bin/sh\necho "Starting Astris Blog..."\npython3 -m uvicorn app.main:app --host 0.0.0.0 --port 8000 &\nsleep 2\ncd /app/client/dist/server && node entry.mjs\n' > /app/start.sh && chmod +x /app/start.sh
+
 # 设置环境变量
 ENV PYTHONPATH=/app
 ENV DATABASE_URL=sqlite+aiosqlite:///./data/blog.db
@@ -80,9 +83,5 @@ ENV PORT=4321
 # 暴露端口（4321: Astro前端, 8000: FastAPI后端）
 EXPOSE 4321 8000
 
-# 复制启动脚本
-COPY start.sh ./
-RUN chmod +x start.sh
-
 # 启动命令
-CMD ["./start.sh"]
+CMD ["/bin/sh", "/app/start.sh"]
