@@ -152,3 +152,18 @@ class Photo(Base):
     # 关联
     album: Mapped["Album"] = relationship(back_populates="photos")
 
+
+class Friend(Base):
+    """友情链接"""
+    __tablename__ = "friends"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(100))  # 友链名称
+    url: Mapped[str] = mapped_column(String(500))  # 链接地址
+    avatar: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # 头像
+    description: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # 描述
+    tags: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)  # 标签，逗号分隔
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)  # 排序
+    is_visible: Mapped[bool] = mapped_column(Boolean, default=True)  # 是否显示
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+

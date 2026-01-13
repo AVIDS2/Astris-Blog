@@ -89,6 +89,7 @@ const menuOptions: MenuOption[] = [
   { label: '评论管理', key: '/comments', icon: () => h('span', '💬') },
   { label: '工具收藏', key: '/tools', icon: () => h('span', '🛠️') },
   { label: '相册管理', key: '/albums', icon: () => h('span', '📷') },
+  { label: '友链管理', key: '/friends', icon: () => h('span', '🔗') },
   { label: 'Banner', key: '/banner', icon: () => h('span', '🖼️') },
   { label: '关于页面', key: '/about', icon: () => h('span', '👤') }
 ]

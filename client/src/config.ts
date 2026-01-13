@@ -179,23 +179,7 @@ export const siteConfig: SiteConfig = {
 	// 注意：自定义字体需要在 src/styles/main.css 中引入字体文件
 	// 注意：字体子集优化功能目前仅支持 TTF 格式字体,开启后需要在生产环境才能看到效果
 	// 目前禁用自定义字体，使用系统默认字体
-	// 如需启用，请将字体文件放到 public/assets/font/ 目录下
-	/*
-	font: {
-		asciiFont: {
-			fontFamily: "ZenMaruGothic-Medium",
-			fontWeight: "400",
-			localFonts: ["ZenMaruGothic-Medium.ttf"],
-			enableCompress: true,
-		},
-		cjkFont: {
-			fontFamily: "萝莉体 第二版",
-			fontWeight: "500",
-			localFonts: ["萝莉体 第二版.ttf"],
-			enableCompress: true,
-		},
-	},
-	*/
+	// 如需启用自定义字体压缩，请参考文档配置 font 选项
 	showLastModified: true, // 控制“上次编辑”卡片显示的开关
 };
 export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {

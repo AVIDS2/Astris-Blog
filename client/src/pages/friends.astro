@@ -20,7 +20,59 @@ if (!friendsPost) {
 }
 
 const { Content } = await render(friendsPost);
-const friendsList = getShuffledFriendsList();
+
+// 定义友链类型
+interface FriendItem {
+	id?: number;
+	name: string;
+	url: string;
+	avatar?: string;
+	description?: string;
+	tags: string[];
+	sort_order?: number;
+}
+
+// 从 API 获取友链，失败时使用本地配置
+async function getFriendsFromApi(): Promise<FriendItem[]> {
+	try {
+		// 判断是否在本地运行（开发或预览模式）
+		const isLocal = import.meta.env.DEV || 
+			(typeof process !== 'undefined' && process.env.NODE_ENV !== 'production') ||
+			siteConfig.siteURL.includes('localhost') ||
+			siteConfig.siteURL.includes('127.0.0.1');
+		
+		// 本地环境使用 localhost:8000，生产环境使用站点 URL
+		const apiUrl = isLocal 
+			? 'http://localhost:8000/api/friends'
+			: `${siteConfig.siteURL.replace(/\/$/, '')}/api/friends`;
+		
+		console.log('[Friends] Fetching from:', apiUrl);
+		
+		const res = await fetch(apiUrl, { 
+			signal: AbortSignal.timeout(5000) 
+		});
+		
+		if (res.ok) {
+			const data = await res.json();
+			console.log('[Friends] Got', data.length, 'friends from API');
+			// 转换 API 返回格式（tags 是逗号分隔的字符串）
+			return data.map((item: any) => ({
+				...item,
+				tags: item.tags ? item.tags.split(',').map((t: string) => t.trim()).filter(Boolean) : []
+			}));
+		}
+		console.log('[Friends] API returned status:', res.status);
+	} catch (e) {
+		console.log('[Friends] Failed to fetch from API:', e);
+	}
+	return [];
+}
+
+// 优先使用 API，无数据时使用本地配置
+let friendsList: FriendItem[] = await getFriendsFromApi();
+if (friendsList.length === 0) {
+	friendsList = getShuffledFriendsList();
+}
 
 // 获取所有标签
 const allTags = Array.from(new Set(friendsList.flatMap((item) => item.tags)));
@@ -31,6 +83,32 @@ const allTags = Array.from(new Set(friendsList.flatMap((item) => item.tags)));
 	<script is:inline>
 		// 标记当前页面为友情链接页面
 		window.isFriendsPage = true;
+		
+		// 标签展开/折叠功能
+		document.addEventListener('DOMContentLoaded', function() {
+			const toggleBtn = document.getElementById('toggle-tags-btn');
+			const filterContainer = document.getElementById('filter-container');
+			const toggleText = document.getElementById('toggle-tags-text');
+			const toggleIcon = document.getElementById('toggle-tags-icon');
+			
+			if (toggleBtn && filterContainer) {
+				let isExpanded = false;
+				
+				toggleBtn.addEventListener('click', function() {
+					isExpanded = !isExpanded;
+					
+					if (isExpanded) {
+						filterContainer.style.maxHeight = filterContainer.scrollHeight + 'px';
+						toggleText.textContent = '收起';
+						toggleIcon.style.transform = 'rotate(180deg)';
+					} else {
+						filterContainer.style.maxHeight = '44px';
+						toggleText.textContent = '展开全部 (' + (filterContainer.querySelectorAll('.filter-tag').length - 1) + ')';
+						toggleIcon.style.transform = 'rotate(0deg)';
+					}
+				});
+			}
+		});
 	</script>
   <script>
     import('../scripts/right-sidebar-layout.js');
@@ -72,22 +150,36 @@ const allTags = Array.from(new Set(friendsList.flatMap((item) => item.tags)));
 					</div>
 				</div>
 
-				<!-- 标签筛选 -->
-				<div class="filter-container flex flex-wrap gap-2">
-					<button 
-						class="filter-tag active"
-						data-tag="all"
-					>
-						{i18n(I18nKey.friendsFilterAll)}
-					</button>
-					{allTags.map(tag => (
+				<!-- 标签筛选（可折叠） -->
+				<div class="filter-wrapper">
+					<div id="filter-container" class="filter-container flex flex-wrap gap-2 overflow-hidden transition-all duration-300" style="max-height: 44px;">
 						<button 
-							class="filter-tag"
-							data-tag={tag}
+							class="filter-tag active"
+							data-tag="all"
 						>
-							{tag}
+							{i18n(I18nKey.friendsFilterAll)}
 						</button>
-					))}
+						{allTags.map(tag => (
+							<button 
+								class="filter-tag"
+								data-tag={tag}
+							>
+								{tag}
+							</button>
+						))}
+					</div>
+					{allTags.length > 8 && (
+						<button 
+							id="toggle-tags-btn"
+							class="mt-2 text-sm text-[var(--primary)] hover:text-[var(--primary)]/80 
+								   flex items-center gap-1 transition-colors duration-200"
+						>
+							<span id="toggle-tags-text">展开全部 ({allTags.length})</span>
+							<svg id="toggle-tags-icon" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+							</svg>
+						</button>
+					)}
 				</div>
 			</div>
 
@@ -98,8 +190,8 @@ const allTags = Array.from(new Set(friendsList.flatMap((item) => item.tags)));
 						class="friend-card group relative bg-transparent rounded-xl border border-black/10 dark:border-white/10
 								 overflow-hidden transition-all duration-300
 								 hover:shadow-xl hover:-translate-y-1"
-						data-title={item.title.toLowerCase()}
-						data-desc={item.desc.toLowerCase()}
+						data-title={(item.name || '').toLowerCase()}
+						data-desc={(item.description || '').toLowerCase()}
 						data-tags={item.tags.join(',')}
 					>
 						<!-- 卡片内容 -->
@@ -112,8 +204,8 @@ const allTags = Array.from(new Set(friendsList.flatMap((item) => item.tags)));
 												ring-2 ring-transparent
 												transition-all duration-300">
 									<img 
-										src={item.imgurl} 
-										alt={item.title}
+										src={item.avatar || '/images/default-avatar.png'} 
+										alt={item.name}
 										class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-300"
 										loading="lazy"
 									/>
@@ -123,23 +215,23 @@ const allTags = Array.from(new Set(friendsList.flatMap((item) => item.tags)));
 								<div class="flex-1 min-w-0">
 									<h3 class="text-xl font-bold text-black/90 dark:text-white/90 mb-1 truncate
 												 group-hover:text-[var(--primary)] transition-colors duration-200">
-										{item.title}
+										{item.name}
 									</h3>
 									<a 
-										href={item.siteurl} 
+										href={item.url} 
 										target="_blank" 
 										rel="noopener noreferrer"
 										class="text-xs text-black/50 dark:text-white/50 hover:text-[var(--primary)] 
 												 truncate block transition-colors duration-200"
 									>
-										{new URL(item.siteurl).hostname}
+										{(() => { try { return new URL(item.url).hostname; } catch { return item.url; } })()}
 									</a>
 								</div>
 							</div>
 
 							<!-- 描述 -->
 							<p class="text-sm text-black/60 dark:text-white/60 mb-4 line-clamp-2 min-h-[2.5rem]">
-								{item.desc}
+								{item.description || '暂无描述'}
 							</p>
 
 							<!-- 标签 -->
@@ -156,7 +248,7 @@ const allTags = Array.from(new Set(friendsList.flatMap((item) => item.tags)));
 							<!-- 操作按钮 -->
 							<div class="flex gap-2">
 								<a 
-									href={item.siteurl}
+									href={item.url}
 									target="_blank"
 									rel="noopener noreferrer"
 									class="flex-1 flex items-center justify-center gap-2 px-4 py-2 
@@ -177,7 +269,7 @@ const allTags = Array.from(new Set(friendsList.flatMap((item) => item.tags)));
 											 hover:bg-[var(--btn-regular-bg-hover)] 
 											 active:scale-95 transition-all duration-200
 											 text-black/70 dark:text-white/70"
-									data-url={item.siteurl}
+									data-url={item.url}
 									title={i18n(I18nKey.friendsCopyLink)}
 								>
 									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

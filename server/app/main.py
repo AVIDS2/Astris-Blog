@@ -8,7 +8,7 @@ from app.database import init_db, async_session
 from app.models import User
 from app.auth import get_password_hash
 from app.config import get_settings
-from app.routers import posts, admin, bilibili, tools, albums, search, about, banner
+from app.routers import posts, admin, bilibili, tools, albums, search, about, banner, friends
 
 settings = get_settings()
 
@@ -73,6 +73,7 @@ app.include_router(albums.router, tags=["相册"])
 app.include_router(about.router, prefix="/api/admin", tags=["关于页面"])
 app.include_router(banner.router, prefix="/api/admin", tags=["Banner管理"])
 app.include_router(banner.router, prefix="/api", tags=["Banner公开接口"])  # 公开接口
+app.include_router(friends.router, prefix="/api", tags=["友链"])
 
 
 # 静态文件服务（管理后台）

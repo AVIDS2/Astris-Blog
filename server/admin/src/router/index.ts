@@ -73,6 +73,12 @@ const routes = [
         name: 'Banner',
         component: () => import('../views/Banner.vue'),
         meta: { requiresAuth: true, title: 'Banner 管理' }
+    },
+    {
+        path: '/friends',
+        name: 'Friends',
+        component: () => import('../views/Friends.vue'),
+        meta: { requiresAuth: true, title: '友链管理' }
     }
 ]
 
