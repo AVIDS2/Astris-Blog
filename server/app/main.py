@@ -100,12 +100,16 @@ client_public_images = os.path.join(BASE_DIR, "client", "public", "images")
 if os.path.exists(client_public_images):
     app.mount("/images", StaticFiles(directory=client_public_images), name="images")
 
-# 静态文件服务（博客前端）- 这是最后的兜底处理，负责主页渲染
+# 静态文件服务（博客前端）- 这是最后的兜底处理
+# 兼容性检查：尝试 dist 或 dist/client (某些构架结构可能不同)
 client_dist = os.path.join(BASE_DIR, "client", "dist")
+if not os.path.exists(os.path.join(client_dist, "index.html")):
+    client_dist = os.path.join(client_dist, "client")
+
 if os.path.exists(client_dist):
     app.mount("/", StaticFiles(directory=client_dist, html=True), name="client")
 else:
-    print(f"⚠️ 警告: 未找到前端构建目录: {client_dist}")
+    print(f"❌ 严重错误: 无法找到前端构建目录，路径检查了 /dist 和 /dist/client")
 
 
 @app.get("/api/health")
