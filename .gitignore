@@ -77,3 +77,6 @@ coverage/
 # package-lock.json
 # yarn.lock
 # pnpm-lock.yaml
+
+# ===== 私有文件 =====
+todolist.md
