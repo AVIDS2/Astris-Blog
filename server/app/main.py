@@ -91,6 +91,11 @@ client_assets = os.path.join(os.path.dirname(__file__), "..", "..", "client", "p
 if os.path.exists(client_assets):
     app.mount("/assets", StaticFiles(directory=client_assets), name="assets")
 
+# 静态文件服务（前端资源 - 图片等）
+client_images = os.path.join(os.path.dirname(__file__), "..", "..", "client", "public", "images")
+if os.path.exists(client_images):
+    app.mount("/images", StaticFiles(directory=client_images), name="images")
+
 # 静态文件服务（博客前端）- 这个是 catch-all，必须最后挂载
 client_dist = os.path.join(os.path.dirname(__file__), "..", "..", "client", "dist")
 if os.path.exists(client_dist):

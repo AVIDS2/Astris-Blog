@@ -28,9 +28,8 @@ async function handleImageUpload({ file }: { file: any }) {
       }
     })
     
-    const isDev = window.location.port !== '';
-    const apiBase = isDev ? 'http://localhost:8000' : '';
-    const imageUrl = apiBase + res.data.url
+    // 始终使用相对路径，确保在任何设备上都能正确访问
+    const imageUrl = res.data.url  // 已经是相对路径 /uploads/photos/xxx
     const markdownImage = `\n![图片描述](${imageUrl})\n`
     insertAtCursor(markdownImage)
     message.success('图片上传成功')
@@ -52,9 +51,8 @@ async function handleCoverUpload({ file }: { file: any }) {
       }
     })
     
-    const isDev = window.location.port !== '';
-    const apiBase = isDev ? 'http://localhost:8000' : '';
-    form.value.cover_image = apiBase + res.data.url
+    // 始终使用相对路径
+    form.value.cover_image = res.data.url
     message.success('封面上传成功')
   } catch (error) {
     message.error('封面上传失败')

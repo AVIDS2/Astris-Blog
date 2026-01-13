@@ -1,217 +1,112 @@
-# 🚀 博客部署指南
+# 🚀 D.Will Blog 部署指南
 
-## 📋 部署前准备
-
-### 1. 确保服务器已安装
-- Docker (20.10+)
-- Docker Compose (v2+)
-
-### 2. 创建环境变量文件
-
-在项目根目录创建 `.env` 文件（参考 `.env.example`）：
-
-```bash
-# 生成随机密钥
-SECRET_KEY=$(openssl rand -hex 32)
-
-# 创建 .env 文件
-cat > .env << EOF
-SECRET_KEY=$SECRET_KEY
-ADMIN_USERNAME=你的用户名
-ADMIN_PASSWORD=你的强密码
-CORS_ORIGINS=https://你的域名.com
-EOF
-```
-
-⚠️ **重要**：`.env` 文件包含敏感信息，请勿提交到 Git！
+## 环境信息
+- **主域名**: `dwill.top` (Cloudflare 转发)
+- **子域名**: `blog.dwill.top:7777` (Caddy 反代)
+- **反向代理**: Caddy
+- **容器宿主机端口**: `9527` (映射到容器内 8000)
+- **项目根目录**: `C:\Users\SERVER\Desktop\zt\my_blog`
 
 ---
 
-## 🐳 Docker 部署
+## 第一步：上传项目
 
-### 方式一：使用 docker-compose（推荐）
+将整个 `my_blog` 文件夹复制到服务器的 `C:\Users\SERVER\Desktop\zt\` 目录下。
+确保包含以下重要文件：
+- `Dockerfile`
+- `docker-compose.yml`
+- `server/`
+- `client/`
+
+---
+
+## 第二步：配置环境变量
+
+在项目根目录下创建 `.env` 文件：
 
 ```bash
-# 1. 上传项目文件到服务器
-scp -r my_blog/ user@server:/path/to/
+cd C:\Users\SERVER\Desktop\zt\my_blog
+copy .env.example .env
+```
 
-# 2. 进入项目目录
-cd /path/to/my_blog
+使用记事本打开并填入真实信息：
+```env
+# JWT 密钥 (推荐生成一个 64 位以上的随机字符串)
+SECRET_KEY=your-random-secret-key-here
 
-# 3. 创建 .env 文件（见上方说明）
+# 管理员密码 (用于登录后台)
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your-secure-password
 
-# 4. 创建数据目录
-mkdir -p data uploads
+# 生产环境 CORS 配置 (非常重要，否则后台无法调接口)
+CORS_ORIGINS=https://dwill.top,https://blog.dwill.top
+```
 
-# 5. 构建并启动
+---
+
+## 第三步：创建网络环境
+
+由于你的 Docker 环境中有其他服务（如 postgres），我们需要确保网络连通：
+```bash
+# 如果 backend 网络已存在则跳过
+docker network create backend
+```
+
+---
+
+## 第四步：构建并启动
+
+```bash
 docker-compose up -d --build
-
-# 6. 查看日志
-docker-compose logs -f
-
-# 7. 查看服务状态
-docker-compose ps
 ```
 
-### 方式二：手动构建
+**提示：** 首次构建需要编译前端和管理后台，大约耗时 5-10 分钟。
 
+### 检查是否启动成功
 ```bash
-# 构建镜像
-docker build -t dwill-blog .
-
-# 运行容器
-docker run -d \
-  --name dwill-blog \
-  -p 8000:8000 \
-  -v $(pwd)/data:/app/data \
-  -v $(pwd)/uploads:/app/uploads \
-  -e SECRET_KEY=你的密钥 \
-  -e ADMIN_USERNAME=你的用户名 \
-  -e ADMIN_PASSWORD=你的密码 \
-  -e CORS_ORIGINS=https://你的域名.com \
-  dwill-blog
+docker ps
 ```
+你应该能看到名为 `dwill-blog` 的容器，状态为 `Up`。
 
 ---
 
-## 🌐 反向代理配置
+## 第五步：调整 Caddy 配置
 
-### Caddy（推荐）
+在你的 `CaddyFile` 中，将之前测试用的 9990 替换为我们的博客端口 9527：
 
-```caddyfile
-你的域名.com {
-    reverse_proxy localhost:8000
+```caddy
+blog.dwill.top:7777 {
+    reverse_proxy localhost:9527
 }
 ```
 
-```bash
-caddy reload
-```
-
-### Nginx
-
-```nginx
-server {
-    listen 80;
-    server_name 你的域名.com;
-
-    location / {
-        proxy_pass http://localhost:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
+保存并重启/热加载 Caddy。
 
 ---
 
-## 📁 数据持久化
-
-| 容器路径 | 主机路径 | 说明 |
-|---------|---------|------|
-| `/app/data` | `./data` | SQLite 数据库 |
-| `/app/uploads` | `./uploads` | 上传的图片文件 |
+## 🔗 访问地址
+- **博客前台**: [https://dwill.top](https://dwill.top)
+- **管理后台**: [https://dwill.top/admin](https://dwill.top/admin)
 
 ---
 
-## 🔧 常用运维命令
+## 🛠️ 常见维护操作
 
+### 查看运行日志
 ```bash
-# 查看容器状态
-docker-compose ps
-
-# 查看实时日志
 docker-compose logs -f blog
-
-# 重启服务
-docker-compose restart
-
-# 停止服务
-docker-compose down
-
-# 更新部署（拉取代码后）
-docker-compose up -d --build
-
-# 进入容器调试
-docker-compose exec blog bash
-
-# 备份数据库
-cp ./data/blog.db ./data/blog.db.backup.$(date +%Y%m%d)
-
-# 备份上传文件
-tar -czvf uploads_backup_$(date +%Y%m%d).tar.gz ./uploads
 ```
+
+### 数据库备份
+数据库文件存放在 `data/blog.db`，直接复制保存即可。
+
+### 更新代码
+如果你在本地修改了代码想同步到服务器：
+1. 覆盖服务器上的源码
+2. 运行 `docker-compose up -d --build` 重新构建镜像
 
 ---
 
-## 🔒 安全建议
-
-1. **修改默认密码**：首次登录管理后台后立即修改密码
-2. **使用强密钥**：`SECRET_KEY` 应使用 `openssl rand -hex 32` 生成
-3. **限制 CORS**：`CORS_ORIGINS` 只允许你的域名
-4. **启用 HTTPS**：确保反向代理已配置 SSL 证书
-5. **定期备份**：备份 `./data` 和 `./uploads` 目录
-6. **更新依赖**：定期更新 Docker 镜像和依赖包
-
----
-
-## 🐛 常见问题
-
-### Q: 图片无法显示
-检查目录权限：
-```bash
-chmod -R 755 ./uploads
-```
-
-### Q: 数据库锁定错误
-重启容器：
-```bash
-docker-compose restart
-```
-
-### Q: 构建失败（内存不足）
-增加 Docker 内存限制或使用 swap：
-```bash
-# 临时增加 swap
-sudo fallocate -l 2G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
-```
-
-### Q: 端口被占用
-修改 docker-compose.yml 中的端口映射：
-```yaml
-ports:
-  - "你的端口:8000"
-```
-
-### Q: 首次访问很慢
-这是正常的，SSR 模式首次请求需要渲染。后续访问会更快。
-
----
-
-## 📊 健康检查
-
-部署完成后，访问以下地址确认服务正常：
-
-- 前端首页：`https://你的域名.com/`
-- API 健康检查：`https://你的域名.com/api/health`
-- 管理后台：`https://你的域名.com/admin/`
-
----
-
-## 🔄 更新部署
-
-```bash
-# 1. 拉取最新代码
-git pull
-
-# 2. 重新构建并启动
-docker-compose up -d --build
-
-# 3. 查看日志确认启动成功
-docker-compose logs -f
-```
+## ⚠️ 注意事项
+1. **图片路径**：我已经修复了图片路径逻辑。如果你发现老文章图片还是不显示，请在后台编辑文章，确保图片路径是以 `/uploads/` 开头的相对路径。
+2. **端口占用**：如果 9527 被占用，请在 `docker-compose.yml` 中修改第一个数值。

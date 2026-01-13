@@ -1,5 +1,5 @@
 # ============================================
-# Docker Compose 配置
+# Docker Compose 配置 - D.Will Blog
 # 使用方法：docker-compose up -d --build
 # ============================================
 
@@ -13,7 +13,8 @@ services:
     container_name: dwill-blog
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      # 使用 9527 端口避免与其他服务冲突
+      - "9527:8000"
     volumes:
       # 持久化数据库
       - ./data:/app/data
@@ -22,31 +23,35 @@ services:
       # 持久化前端 Banner 图片（可通过管理后台上传）
       - ./client/public/assets/desktop-banner:/app/client/public/assets/desktop-banner
       - ./client/public/assets/mobile-banner:/app/client/public/assets/mobile-banner
+      # 持久化前端图片
+      - ./client/public/images:/app/client/public/images
     environment:
       # 应用配置
       - APP_NAME=${APP_NAME:-D.Will Blog}
       - DEBUG=${DEBUG:-false}
-      
+
       # 数据库 (容器内路径)
       - DATABASE_URL=${DATABASE_URL:-sqlite+aiosqlite:///./data/blog.db}
-      
+
       # JWT 密钥 (必须修改!)
       - SECRET_KEY=${SECRET_KEY:?请在 .env 文件中设置 SECRET_KEY}
-      
+
       # 管理员账户 (必须修改!)
       - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:?请在 .env 文件中设置 ADMIN_PASSWORD}
-      
+
       # CORS 配置 (改为你的域名)
-      - CORS_ORIGINS=${CORS_ORIGINS:-*}
+      - CORS_ORIGINS=${CORS_ORIGINS:-https://dwill.top,https://blog.dwill.top}
+    networks:
+      - backend
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')" ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
 
-# 网络配置
+# 使用与其他服务相同的网络
 networks:
-  default:
-    name: blog-network
+  backend:
+    external: true
