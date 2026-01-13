@@ -28,8 +28,8 @@ htmlcov/
 # ===== 数据库与上传文件 =====
 *.db
 *.sqlite3
-data/
-uploads/
+/data/
+/uploads/
 
 # ===== 环境配置（敏感信息）=====
 .env
