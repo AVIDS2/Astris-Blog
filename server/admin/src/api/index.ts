@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { useAuthStore } from '../stores/auth'
 
-const isDev = window.location.port !== ''
-const apiBase = isDev ? `http://${window.location.hostname}:8000` : ''
+// 只有在 localhost 开发时才使用 8000 端口，其他情况使用相对路径
+const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const apiBase = isLocalDev ? `http://${window.location.hostname}:8000` : ''
 
 export const api = axios.create({
     baseURL: apiBase,
