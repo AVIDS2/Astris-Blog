@@ -1,0 +1,153 @@
+---
+/**
+ * 站点统计组件 - 从 API 获取统计数据
+ */
+import { Icon } from "astro-icon/components";
+import { siteConfig } from "../../config";
+import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
+import { fetchStats, fetchPosts } from "../../utils/api-client";
+import WidgetLayout from "./WidgetLayout.astro";
+
+interface Props {
+	class?: string;
+	style?: string;
+}
+
+const { class: className, style } = Astro.props;
+
+// 从配置中获取站点开始日期
+const siteStartDate = siteConfig.siteStartDate || "2025-01-01";
+
+// 从 API 获取统计数据
+let postsCount = 0;
+let categoriesCount = 0;
+let tagsCount = 0;
+let totalViews = 0;
+let lastPostDate: string | null = null;
+
+try {
+	const stats = await fetchStats();
+	postsCount = stats.posts;
+	categoriesCount = stats.categories;
+	tagsCount = stats.tags;
+	totalViews = stats.views;
+	
+	// 获取最新文章日期
+	const postsResponse = await fetchPosts(1, 1);
+	if (postsResponse.items.length > 0) {
+		lastPostDate = postsResponse.items[0].created_at;
+	}
+} catch (e) {
+	console.error('Failed to fetch stats:', e);
+}
+
+// 格式化数字（添加千位分隔符）
+function formatNumber(num: number): string {
+	return num.toLocaleString();
+}
+
+const stats = [
+	{
+		icon: "material-symbols:article-outline",
+		label: i18n(I18nKey.siteStatsPostCount),
+		value: postsCount,
+	},
+	{
+		icon: "material-symbols:folder-outline",
+		label: i18n(I18nKey.siteStatsCategoryCount),
+		value: categoriesCount,
+	},
+	{
+		icon: "material-symbols:label-outline",
+		label: i18n(I18nKey.siteStatsTagCount),
+		value: tagsCount,
+	},
+	{
+		icon: "material-symbols:visibility-outline",
+		label: "总浏览量",
+		value: totalViews,
+		formatted: true,
+	},
+	{
+		icon: "material-symbols:calendar-clock-outline",
+		label: i18n(I18nKey.siteStatsRunningDays),
+		value: 0, // 将由客户端更新
+		suffix: i18n(I18nKey.siteStatsDays).replace("{days}", ""),
+		dynamic: true,
+		id: "running-days",
+	},
+	{
+		icon: "material-symbols:ecg-heart-outline",
+		label: i18n(I18nKey.siteStatsLastUpdate),
+		value: 0, // 将由客户端更新
+		suffix: i18n(I18nKey.siteStatsDaysAgo).replace("{days}", ""),
+		dynamic: true,
+		id: "last-update",
+	},
+];
+---
+
+<WidgetLayout name={i18n(I18nKey.siteStats)} id="site-stats" class={className} style={style}>
+  <div class="flex flex-col gap-2">
+    {stats.map((stat) => (
+      <div class="flex items-center justify-between px-3 py-1.5">
+        <div class="flex items-center gap-2.5">
+          <div class="text-[var(--primary)] text-xl">
+            <Icon name={stat.icon} />
+          </div>
+          <span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm">
+            {stat.label}
+          </span>
+        </div>
+        <div class="flex items-center">
+          <span 
+            class="text-base font-bold text-neutral-900 dark:text-neutral-100"
+            data-stat-id={stat.id}
+          >
+            {stat.formatted ? formatNumber(stat.value) : stat.value}
+          </span>
+          {stat.suffix && (
+            <span class="text-sm text-neutral-500 dark:text-neutral-400 ml-1">
+              {stat.suffix}
+            </span>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+</WidgetLayout>
+
+<script is:inline define:vars={{ siteStartDate, lastPostDate }}>
+  function updateDynamicStats() {
+    const today = new Date();
+    
+    // 更新运行天数
+    const startDate = new Date(siteStartDate);
+    const diffTime = Math.abs(today.getTime() - startDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    const runningDaysElement = document.querySelector('[data-stat-id="running-days"]');
+    if (runningDaysElement) {
+      runningDaysElement.textContent = diffDays.toString();
+    }
+    
+    // 更新最后活动时间
+    if (lastPostDate) {
+      const lastPost = new Date(lastPostDate);
+      const timeSinceLastPost = Math.abs(today.getTime() - lastPost.getTime());
+      const daysSinceLastUpdate = Math.floor(timeSinceLastPost / (1000 * 60 * 60 * 24));
+      
+      const lastUpdateElement = document.querySelector('[data-stat-id="last-update"]');
+      if (lastUpdateElement) {
+        lastUpdateElement.textContent = daysSinceLastUpdate.toString();
+      }
+    }
+  }
+  
+  // 页面加载时更新
+  updateDynamicStats();
+  
+  // 每小时更新一次
+  setInterval(updateDynamicStats, 60 * 60 * 1000);
+</script>

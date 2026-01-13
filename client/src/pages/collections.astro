@@ -1,0 +1,45 @@
+---
+import { getEntry, render } from "astro:content";
+import { siteConfig } from "../config";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+import CollectionsComponent from "../components/Collections.svelte";
+
+const toolEntry = await getEntry("spec", "tools");
+const { Content } = toolEntry ? await render(toolEntry) : { Content: null };
+
+// 静态渲染工具 HTML 以传给 Svelte
+let toolsHtml = "";
+if (toolEntry) {
+    // 这里我们简单处理，让 Svelte 自己处理样式
+}
+
+const title = "收藏（分享）";
+---
+
+<MainGridLayout title={title}>
+    <div class="card-base z-10 px-9 py-6 relative w-full mb-8">
+        <h1 class="text-4xl font-bold text-black/90 dark:text-white/90 mb-2 relative
+                  before:w-1 before:h-8 before:rounded-md before:bg-[var(--primary)]
+                  before:absolute before:top-1/2 before:-translate-y-1/2 before:-left-4">
+            {title}
+        </h1>
+        <p class="text-black/60 dark:text-white/60 mb-8">
+            “那是属于我的大秘宝” —— 分享发现的有趣事物。
+        </p>
+        
+        <CollectionsComponent client:only="svelte" 
+            githubUser="AVIDS2" 
+            bilibiliFavId="3845617847"
+        >
+            <div slot="tools">
+                {toolEntry && <div class="prose dark:prose-invert max-w-none"><Content /></div>}
+            </div>
+        </CollectionsComponent>
+    </div>
+</MainGridLayout>
+
+<style>
+    .card-base {
+        @apply bg-[var(--card-bg)] border border-[var(--line-divider)] rounded-[var(--radius-large)];
+    }
+</style>

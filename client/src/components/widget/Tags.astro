@@ -1,0 +1,54 @@
+---
+/**
+ * 标签侧边栏组件 - 从 API 获取标签列表
+ */
+import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
+import { fetchTags, type ApiTag } from "../../utils/api-client";
+import { widgetManager } from "../../utils/widget-manager";
+import ButtonTag from "../control/ButtonTag.astro";
+import WidgetLayout from "./WidgetLayout.astro";
+
+// 从 API 获取标签
+let tags: { name: string; count: number }[] = [];
+
+try {
+    const apiTags = await fetchTags();
+    tags = apiTags.map(t => ({
+        name: t.name,
+        count: t.post_count,
+    }));
+} catch (e) {
+    console.error('Failed to fetch tags:', e);
+}
+
+const COLLAPSED_HEIGHT = "7.5rem";
+
+// 使用统一的组件管理器检查是否应该折叠
+const tagsComponent = widgetManager
+	.getConfig()
+	.components.find((c) => c.type === "tags");
+const isCollapsed = tagsComponent
+	? widgetManager.isCollapsed(tagsComponent, tags.length)
+	: false;
+
+interface Props {
+	class?: string;
+	style?: string;
+}
+const className = Astro.props.class;
+const style = Astro.props.style;
+---
+<WidgetLayout name={i18n(I18nKey.tags)} id="tags" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT} class={className} style={style}>
+    <div class="flex gap-2 flex-wrap">
+        {tags.length > 0 ? (
+            tags.map(t => (
+                <ButtonTag href={`/archive/?tag=${encodeURIComponent(t.name)}`} label={`View all posts with the ${t.name.trim()} tag`}>
+                    {t.name.trim()}
+                </ButtonTag>
+            ))
+        ) : (
+            <p class="text-sm text-gray-400">暂无标签</p>
+        )}
+    </div>
+</WidgetLayout>

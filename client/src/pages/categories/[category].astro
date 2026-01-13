@@ -1,0 +1,58 @@
+---
+/**
+ * 分类文章列表页 - 处理 /categories/[category]/ 路由
+ */
+export const prerender = false;
+
+import ApiPostCard from "../../components/ApiPostCard.astro";
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
+import { fetchPosts } from "../../utils/api-client";
+import { Icon } from "astro-icon/components";
+
+const { category } = Astro.params;
+
+if (!category) {
+    return Astro.redirect('/');
+}
+
+// 分页逻辑
+const page = 1;
+const pageSize = 100;
+
+let posts = [];
+let total = 0;
+let error: string | null = null;
+
+try {
+    // 后端接口支持按 category 筛选，这里传入 slug
+    const response = await fetchPosts(page, pageSize, category, undefined);
+    posts = response.items;
+    total = response.total;
+} catch (e) {
+    error = e instanceof Error ? e.message : '获取文章失败';
+}
+---
+
+<MainGridLayout title={`分类: ${category}`}>
+    <div class="mb-6 flex items-center gap-2 text-2xl font-bold text-90 px-2">
+        <Icon name="material-symbols:folder-open-outline-rounded" class="text-[var(--primary)]" />
+        <span>分类: {category}</span>
+        <span class="text-sm font-normal text-50 ml-2">({total} 篇文章)</span>
+    </div>
+
+    {error ? (
+        <div class="card-base p-8 text-center text-red-500">{error}</div>
+    ) : posts.length === 0 ? (
+        <div class="card-base p-8 text-center text-gray-500">该分类下暂无文章</div>
+    ) : (
+        <div class="flex flex-col gap-4">
+            {posts.map((post, index) => (
+                <ApiPostCard
+                    post={post}
+                    class:list="onload-animation"
+                    style={`--i: ${index}; --interval: 50ms;`}
+                />
+            ))}
+        </div>
+    )}
+</MainGridLayout>

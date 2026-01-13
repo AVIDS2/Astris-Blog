@@ -1,0 +1,151 @@
+/**
+ * highlight.js 代码高亮样式
+ * 基于 GitHub Dark 主题优化
+ */
+
+/* 代码块容器 */
+pre {
+    background: #1e1e2e !important;
+    border-radius: 12px !important;
+    padding: 1.25rem !important;
+    margin: 1.5rem 0 !important;
+    overflow-x: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+pre code {
+    background: transparent !important;
+    padding: 0 !important;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', monospace !important;
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    color: #cdd6f4 !important;
+}
+
+/* 行内代码 */
+:not(pre) > code {
+    background: rgba(var(--primary-rgb, 122, 162, 247), 0.15) !important;
+    color: var(--primary, #7aa2f7) !important;
+    padding: 0.2em 0.5em !important;
+    border-radius: 6px !important;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace !important;
+    font-size: 0.9em !important;
+}
+
+/* highlight.js 语法高亮颜色 - Catppuccin Mocha 主题 */
+.hljs {
+    color: #cdd6f4;
+    background: #1e1e2e;
+}
+
+.hljs-comment,
+.hljs-quote {
+    color: #6c7086;
+    font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-addition {
+    color: #cba6f7;
+}
+
+.hljs-number,
+.hljs-string,
+.hljs-meta .hljs-meta-string,
+.hljs-literal,
+.hljs-doctag,
+.hljs-regexp {
+    color: #a6e3a1;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+    color: #89b4fa;
+}
+
+.hljs-attribute,
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-class .hljs-title,
+.hljs-type {
+    color: #f9e2af;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-subst,
+.hljs-meta,
+.hljs-meta .hljs-keyword,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-link {
+    color: #94e2d5;
+}
+
+.hljs-built_in,
+.hljs-deletion {
+    color: #f38ba8;
+}
+
+.hljs-formula {
+    background: #45475a;
+}
+
+.hljs-emphasis {
+    font-style: italic;
+}
+
+.hljs-strong {
+    font-weight: bold;
+}
+
+/* 亮色模式下的代码块 */
+html:not(.dark) pre {
+    background: #f6f8fa !important;
+    border: 1px solid #e1e4e8;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+html:not(.dark) pre code,
+html:not(.dark) .hljs {
+    color: #24292e !important;
+    background: #f6f8fa !important;
+}
+
+html:not(.dark) .hljs-comment,
+html:not(.dark) .hljs-quote {
+    color: #6a737d;
+}
+
+html:not(.dark) .hljs-keyword,
+html:not(.dark) .hljs-selector-tag {
+    color: #d73a49;
+}
+
+html:not(.dark) .hljs-number,
+html:not(.dark) .hljs-string,
+html:not(.dark) .hljs-literal {
+    color: #032f62;
+}
+
+html:not(.dark) .hljs-title,
+html:not(.dark) .hljs-section,
+html:not(.dark) .hljs-name {
+    color: #6f42c1;
+}
+
+html:not(.dark) .hljs-attribute,
+html:not(.dark) .hljs-attr,
+html:not(.dark) .hljs-variable {
+    color: #e36209;
+}
+
+html:not(.dark) .hljs-built_in {
+    color: #005cc5;
+}

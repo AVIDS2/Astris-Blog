@@ -1,0 +1,96 @@
+/**
+ * 移动端深度优化样式 - 最终修复版
+ * 解决 Banner 空白、位置偏移、看板娘遮挡等核心问题
+ */
+
+@media (max-width: 1279px) {
+
+    /* 1. 基础布局修复：强制同步 Banner 和内容位置 */
+    :root {
+        --banner-height-mobile: 50vh;
+        --navbar-height: 4rem;
+        /* 约等于 5.5rem 的实际占用高度 */
+    }
+
+    /* 首页：Banner 显示状态 */
+    body.enable-banner #banner-wrapper:not(.mobile-hide-banner) {
+        height: var(--banner-height-mobile) !important;
+        top: 0 !important;
+        min-height: 350px !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+
+    body.enable-banner .absolute.w-full.z-30:not(.mobile-main-no-banner) {
+        top: var(--banner-height-mobile) !important;
+        /* 强制对齐 Banner 底部 */
+        min-height: calc(100vh - var(--banner-height-mobile)) !important;
+    }
+
+    /* 非首页：Banner 隐藏状态 */
+    body.enable-banner #banner-wrapper.mobile-hide-banner {
+        height: 5.5rem !important;
+        /* 仅保留顶部一小块，或者设为 0 */
+        top: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* 解决非首页主内容区域巨大的空白问题 */
+    body.enable-banner .absolute.w-full.z-30.mobile-main-no-banner {
+        top: 5.5rem !important;
+        /* 紧贴导航栏，彻底消除空白 */
+        min-height: calc(100vh - 5.5rem) !important;
+    }
+
+    /* 2. 交互组件优化 */
+    .live2d-container {
+        display: none !important;
+        /* 移动端完全隐藏看板娘 */
+    }
+
+    /* 3. Banner 文字适配 */
+    .banner-text-overlay {
+        padding: 1rem !important;
+    }
+
+    .banner-title {
+        font-size: clamp(1.8rem, 10vw, 2.5rem) !important;
+        letter-spacing: 0.1rem !important;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8) !important;
+    }
+
+    .banner-subtitle {
+        font-size: 0.9rem !important;
+        opacity: 0.9;
+    }
+
+    /* 4. 装饰性元素优化 */
+    .waves {
+        height: 40px !important;
+        min-height: 30px !important;
+        bottom: -1px !important;
+    }
+
+    /* 5. 卡片与边距优化 */
+    .card-base {
+        margin-left: 0.5rem !important;
+        margin-right: 0.5rem !important;
+        width: calc(100% - 1rem) !important;
+        border-radius: 0.75rem !important;
+    }
+
+    #post-container {
+        padding: 1rem 0.75rem !important;
+    }
+
+    /* 6. 页脚紧凑化 */
+    footer {
+        padding: 1.5rem 1rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* 7. 搜索面板在手机端的层级修复 */
+    #search-panel {
+        z-index: 100 !important;
+    }
+}

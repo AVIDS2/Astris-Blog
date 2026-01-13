@@ -1,0 +1,54 @@
+# ================================
+# Docker 忽略文件
+# ================================
+
+# Git
+.git
+.gitignore
+
+# Node 依赖 (会在容器中重新安装)
+**/node_modules
+
+# Python 缓存
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/.pytest_cache
+
+# 本地数据库和上传文件 (通过 volume 挂载)
+*.db
+data/
+uploads/
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# 日志
+*.log
+logs/
+
+# 环境变量文件（敏感信息）
+.env
+.env.local
+.env.*.local
+
+# 构建产物 (会在容器中重新构建)
+client/dist
+server/admin/dist
+server/static
+
+# 测试
+**/coverage
+**/.nyc_output
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 可选：保留文档
+# *.md
+# !README.md
+# !DEPLOY.md

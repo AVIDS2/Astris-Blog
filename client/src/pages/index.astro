@@ -1,0 +1,85 @@
+---
+/**
+ * SSR 首页 - 从 API 动态获取文章列表
+ * 设置 prerender = false 启用服务端渲染
+ */
+export const prerender = false;
+
+import ApiPostCard from "../components/ApiPostCard.astro";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+import { fetchPosts, type ApiPostList } from "../utils/api-client";
+import { Icon } from "astro-icon/components";
+
+// 获取分页参数
+const url = new URL(Astro.request.url);
+const pageParam = url.searchParams.get('page');
+const page = pageParam ? parseInt(pageParam) : 1;
+const pageSize = 10;
+
+// 从 API 获取文章
+let posts: ApiPostList[] = [];
+let total = 0;
+let totalPages = 1;
+let error: string | null = null;
+
+try {
+	const response = await fetchPosts(page, pageSize);
+	posts = response.items;
+	total = response.total;
+	totalPages = response.total_pages;
+} catch (e) {
+	error = e instanceof Error ? e.message : '获取文章失败';
+	console.error('Failed to fetch posts:', e);
+}
+---
+
+<MainGridLayout>
+	{error ? (
+		<div class="card-base p-8 text-center">
+			<Icon name="material-symbols:error-outline" class="text-4xl text-red-500 mb-4" />
+			<p class="text-gray-500">{error}</p>
+			<p class="text-sm text-gray-400 mt-2">请确保后端 API 服务正在运行</p>
+		</div>
+	) : posts.length === 0 ? (
+		<div class="card-base p-8 text-center">
+			<Icon name="material-symbols:article-outline" class="text-4xl text-gray-400 mb-4" />
+			<p class="text-gray-500">暂无文章</p>
+			<p class="text-sm text-gray-400 mt-2">在管理后台发布你的第一篇文章吧！</p>
+		</div>
+	) : (
+		<div id="post-list-container" class="flex flex-col gap-4">
+			{posts.map((post, index) => (
+				<ApiPostCard
+					post={post}
+					class:list="onload-animation"
+					style={`--i: ${index}; --interval: 50ms;`}
+				/>
+			))}
+		</div>
+	)}
+	
+	<!-- 分页 -->
+	{totalPages > 1 && (
+		<div class="flex justify-center items-center gap-4 mt-8">
+			{page > 1 && (
+				<a 
+					href={`/?page=${page - 1}`}
+					class="btn-regular px-4 py-2 rounded-lg"
+				>
+					上一页
+				</a>
+			)}
+			<span class="text-gray-500">
+				第 {page} / {totalPages} 页
+			</span>
+			{page < totalPages && (
+				<a 
+					href={`/?page=${page + 1}`}
+					class="btn-regular px-4 py-2 rounded-lg"
+				>
+					下一页
+				</a>
+			)}
+		</div>
+	)}
+</MainGridLayout>

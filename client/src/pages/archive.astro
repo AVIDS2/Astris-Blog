@@ -1,0 +1,64 @@
+---
+/**
+ * SSR 归档页 - 从 API 动态获取所有文章并按年份归档
+ */
+export const prerender = false;
+
+import ArchivePanel from "@components/ArchivePanel.svelte";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { fetchPosts, type ApiPostList } from "@utils/api-client";
+
+// 获取所有文章（获取足够多的文章用于归档）
+let allPosts: ApiPostList[] = [];
+let error: string | null = null;
+
+try {
+    console.log('[Archive] Fetching posts from API...');
+    // 获取所有文章，设置较大的 page_size
+    const response = await fetchPosts(1, 500);
+    console.log('[Archive] Fetched', response.items.length, 'posts');
+    allPosts = response.items;
+} catch (e) {
+    console.error('[Archive] Error fetching posts:', e);
+    error = e instanceof Error ? e.message : '获取文章失败';
+}
+
+// 转换为 ArchivePanel 期望的格式
+const posts = allPosts.map((post) => ({
+    id: post.slug,
+    url: `/posts/${post.slug}/`,
+    data: {
+        title: post.title,
+        tags: post.tags?.map(t => t.name) || [],
+        category: post.category?.name || undefined,
+        published: new Date(post.created_at),
+    },
+}));
+
+// 提取所有标签 (去重)
+const tags = [...new Set(posts.flatMap(post => post.data.tags))];
+
+// 提取所有分类 (去重且过滤掉 undefined)
+const categories = [...new Set(posts.map(post => post.data.category).filter((c): c is string => typeof c === "string"))];
+---
+
+<MainGridLayout title={i18n(I18nKey.archive)}>
+    <script>
+        import('../scripts/right-sidebar-layout.js');
+    </script>
+
+    {error ? (
+        <div class="card-base p-8 text-center">
+            <p class="text-gray-500">{error}</p>
+        </div>
+    ) : (
+        <ArchivePanel
+            sortedPosts={posts}
+            tags={tags}
+            categories={categories}
+            client:only="svelte"
+        ></ArchivePanel>
+    )}
+</MainGridLayout>
