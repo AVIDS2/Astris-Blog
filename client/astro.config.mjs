@@ -206,3 +206,4 @@ export default defineConfig({
 		},
 	},
 });
+// 1.0
