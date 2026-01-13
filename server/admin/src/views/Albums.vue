@@ -8,8 +8,8 @@ const dialog = useDialog()
 const authStore = useAuthStore()
 
 // 动态获取 API 基础路径，支持手机访问
-const isDev = window.location.port !== ''
-const API_BASE = isDev ? `http://${window.location.hostname}:8000` : ''
+const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const API_BASE = isLocalDev ? `http://${window.location.hostname}:8000` : ''
 
 interface Photo {
   id: number
