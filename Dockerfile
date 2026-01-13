@@ -61,8 +61,8 @@ COPY server/app ./app
 COPY --from=frontend-builder /app/client/dist ./client/dist
 
 # 从构建阶段复制管理后台构建产物
-# 注意：在 admin-builder 阶段，WORKDIR 是 /app/admin，所以产物在 /app/admin/dist
-COPY --from=admin-builder /app/admin/dist ./static/admin
+# 路径解析：Vite 构建时将产物输出了 "../static/admin"，相对于 /app/admin 即为 /app/static/admin
+COPY --from=admin-builder /app/static/admin ./static/admin
 
 # 复制前端静态资源（Banner 图片等）
 COPY client/public/assets ./client/public/assets
