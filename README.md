@@ -16,7 +16,37 @@
     <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker" alt="Docker" />
     <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License" />
   </p>
+
+  <p>
+    <a href="https://dwill.top/"><b>🖥️ 演示站点</b></a> •
+    <a href="./DEPLOY.md"><b>📖 部署文档</b></a>
+  </p>
 </div>
+
+---
+
+## 📸 预览 (Preview)
+
+### 🖥️ 博客前台 (User Side)
+<table>
+  <tr>
+    <td><img src="docs/screenshots/home.png" alt="首页"></td>
+    <td><img src="docs/screenshots/projects.png" alt="项目展示"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/friends.png" alt="友链页面"></td>
+    <td><img src="docs/screenshots/albums.png" alt="我的相册"></td>
+  </tr>
+</table>
+
+### ⚙️ 管理后台 & 移动端 (Admin & Mobile)
+<table>
+  <tr>
+    <td><img src="docs/screenshots/admin_dashboard.png" alt="后台仪表盘"></td>
+    <td><img src="docs/screenshots/admin_albums.png" alt="后台相册管理"></td>
+    <td><img src="docs/screenshots/admin_mobile.jpg" alt="移动端后台"></td>
+  </tr>
+</table>
 
 ---
 
