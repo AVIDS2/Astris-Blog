@@ -51,7 +51,7 @@ export const siteConfig: SiteConfig = {
 	// 顶栏标题配置
 	navbarTitle: {
 		// 顶栏标题文本
-		text: "D.Will",
+		text: "Astris",
 		// 顶栏标题图标路径，留空则不显示
 		icon: "",
 	},
