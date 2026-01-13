@@ -15,12 +15,21 @@ from app.models import User
 router = APIRouter(prefix="/banner", tags=["banner"])
 
 # Banner 图片存储路径
-CLIENT_PUBLIC = Path(__file__).parent.parent.parent.parent / "client" / "public"
+# 兼容 Docker 环境 (/app) 和本地开发环境
+BASE_DIR = Path(__file__).parent.parent.parent  # server 目录
+CLIENT_PUBLIC = BASE_DIR.parent / "client" / "public"
+
+# Docker 环境下的备用路径
+if not CLIENT_PUBLIC.exists():
+    CLIENT_PUBLIC = Path("/app/client/public")
+
 DESKTOP_BANNER_DIR = CLIENT_PUBLIC / "assets" / "desktop-banner"
 MOBILE_BANNER_DIR = CLIENT_PUBLIC / "assets" / "mobile-banner"
 
 # 缩略图目录
-THUMBNAIL_DIR = Path(__file__).parent.parent.parent / "uploads" / "banner-thumbnails"
+THUMBNAIL_DIR = BASE_DIR / "uploads" / "banner-thumbnails"
+if not THUMBNAIL_DIR.parent.exists():
+    THUMBNAIL_DIR = Path("/app/uploads/banner-thumbnails")
 THUMBNAIL_DIR.mkdir(parents=True, exist_ok=True)
 
 # 确保目录存在

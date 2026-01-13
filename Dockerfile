@@ -66,6 +66,9 @@ COPY --from=admin-builder /app/static/admin ./static/admin
 COPY client/public/assets ./client/public/assets
 COPY client/public/images ./client/public/images
 
+# 复制前端内容文件（用于关于页面编辑）
+COPY client/src/content ./client/src/content
+
 # 创建数据目录（用于 SQLite 和上传文件）
 RUN mkdir -p /app/data /app/uploads/photos/thumbnails
 

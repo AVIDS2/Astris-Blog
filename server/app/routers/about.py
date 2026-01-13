@@ -9,7 +9,13 @@ from app.models import User
 router = APIRouter(prefix="/about", tags=["about"])
 
 # 关于页面 Markdown 文件路径
-ABOUT_FILE = Path(__file__).parent.parent.parent.parent / "client" / "src" / "content" / "spec" / "about.md"
+# 兼容 Docker 环境 (/app) 和本地开发环境
+BASE_DIR = Path(__file__).parent.parent.parent  # server 目录
+ABOUT_FILE = BASE_DIR.parent / "client" / "src" / "content" / "spec" / "about.md"
+
+# Docker 环境下的备用路径
+if not ABOUT_FILE.exists():
+    ABOUT_FILE = Path("/app/client/src/content/spec/about.md")
 
 
 class AboutContent(BaseModel):
