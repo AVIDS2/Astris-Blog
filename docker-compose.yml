@@ -13,8 +13,10 @@ services:
     container_name: astris-blog
     restart: unless-stopped
     ports:
-      # 使用 9527 端口避免与其他服务冲突
-      - "9527:8000"
+      # 9527 映射到 Astro 前端 (4321) - 博客页面
+      - "9527:4321"
+      # 9528 映射到 FastAPI 后端 (8000) - API 和管理后台
+      - "9528:8000"
     volumes:
       # 持久化数据库
       - ./data:/app/data
