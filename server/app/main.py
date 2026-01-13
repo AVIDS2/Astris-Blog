@@ -76,30 +76,36 @@ app.include_router(banner.router, prefix="/api", tags=["Banner公开接口"])  #
 app.include_router(friends.router, prefix="/api", tags=["友链"])
 
 
+# 获取项目根目录 (Docker 环境下为 /app)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # 静态文件服务（管理后台）
-admin_dist = os.path.join(os.path.dirname(__file__), "..", "static", "admin")
+admin_dist = os.path.join(BASE_DIR, "static", "admin")
 if os.path.exists(admin_dist):
     app.mount("/admin", StaticFiles(directory=admin_dist, html=True), name="admin")
+else:
+    print(f"⚠️ 警告: 未找到管理后台目录: {admin_dist}")
 
-# 静态文件服务（上传的文件）- 必须在 / 之前挂载
-uploads_dir = os.path.join(os.path.dirname(__file__), "..", "uploads")
+# 静态文件服务（上传的文件）
+uploads_dir = os.path.join(BASE_DIR, "uploads")
 os.makedirs(uploads_dir, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 
-# 静态文件服务（前端资源 - Banner 等）
-client_assets = os.path.join(os.path.dirname(__file__), "..", "..", "client", "public", "assets")
-if os.path.exists(client_assets):
-    app.mount("/assets", StaticFiles(directory=client_assets), name="assets")
+# 静态文件服务（前端静态资源）
+client_public_assets = os.path.join(BASE_DIR, "client", "public", "assets")
+if os.path.exists(client_public_assets):
+    app.mount("/assets", StaticFiles(directory=client_public_assets), name="assets")
 
-# 静态文件服务（前端资源 - 图片等）
-client_images = os.path.join(os.path.dirname(__file__), "..", "..", "client", "public", "images")
-if os.path.exists(client_images):
-    app.mount("/images", StaticFiles(directory=client_images), name="images")
+client_public_images = os.path.join(BASE_DIR, "client", "public", "images")
+if os.path.exists(client_public_images):
+    app.mount("/images", StaticFiles(directory=client_public_images), name="images")
 
-# 静态文件服务（博客前端）- 这个是 catch-all，必须最后挂载
-client_dist = os.path.join(os.path.dirname(__file__), "..", "..", "client", "dist")
+# 静态文件服务（博客前端）- 这是最后的兜底处理，负责主页渲染
+client_dist = os.path.join(BASE_DIR, "client", "dist", "client")
 if os.path.exists(client_dist):
     app.mount("/", StaticFiles(directory=client_dist, html=True), name="client")
+else:
+    print(f"⚠️ 警告: 未找到前端构建目录: {client_dist}")
 
 
 @app.get("/api/health")
