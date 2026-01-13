@@ -9,22 +9,18 @@
 @import "./gradient-buttons.css";
 /* 加密内容样式已移除，现在直接使用非加密文章的样式 */
 
-/* 导入 ZenMaruGothic-Medium 字体 */
+/* 导入 ZenMaruGothic-Medium 字体 - 可选装饰字体 */
 @font-face {
   font-family: "ZenMaruGothic-Medium";
-  src: url("/assets/font/ZenMaruGothic-Medium.woff2") format("woff2");
+  src: url("/assets/font/ZenMaruGothic-Medium.ttf") format("truetype");
   font-weight: 500;
   font-display: swap;
 }
 
-/* 导入 萝莉体 第二版 字体 */
-@font-face {
-  font-family: "萝莉体 第二版";
-  src: url("/assets/font/萝莉体 第二版.woff2") format("woff2");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
+/* 注意：萝莉体字体已移除，原因：
+   1. 文件太大（10MB），严重影响加载速度
+   2. 在 config.ts 中被注释掉，未被使用
+   如需使用自定义中文字体，请使用 Web Font 服务或字体子集化工具 */
 
 @tailwind base;
 @tailwind components;
@@ -54,6 +50,7 @@ html {
 }
 
 @layer components {
+
   /* View Transitions API 主题切换动画 */
   /* 为整个文档根元素设置视图过渡 */
   ::view-transition-old(root),
@@ -89,6 +86,7 @@ html {
     0% {
       opacity: 1;
     }
+
     100% {
       opacity: 0;
     }
@@ -99,6 +97,7 @@ html {
     0% {
       opacity: 0;
     }
+
     100% {
       opacity: 1;
     }
@@ -145,6 +144,7 @@ html {
     content-visibility: visible !important;
     opacity: 1 !important;
   }
+
   /* 禁用复杂选择器元素的过渡 - 仅在非 View Transitions 模式下 */
   .is-theme-transitioning:not(.use-view-transition) .float-panel,
   .is-theme-transitioning:not(.use-view-transition) .float-panel *,
@@ -174,16 +174,16 @@ html {
   }
 
   /* 导航栏主题切换保护 - 仅在非 View Transitions 模式下禁用过渡 */
-  .is-theme-transitioning:not(.use-view-transition) #navbar > div,
-  .is-theme-transitioning:not(.use-view-transition) #navbar[data-transparent-mode] > div,
-  .is-theme-transitioning:not(.use-view-transition) #navbar[data-transparent-mode].scrolled > div,
-  .is-theme-transitioning:not(.use-view-transition) body.wallpaper-transparent #navbar > div,
-  .is-theme-transitioning:not(.use-view-transition) body.wallpaper-transparent #navbar[data-transparent-mode] > div,
-  .is-theme-transitioning:not(.use-view-transition) body.wallpaper-transparent #navbar[data-transparent-mode].scrolled > div,
-  .is-theme-transitioning:not(.use-view-transition) #banner-wrapper ~ * #navbar > div,
-  .is-theme-transitioning:not(.use-view-transition) #banner-wrapper ~ * #navbar[data-transparent-mode] > div,
-  .is-theme-transitioning:not(.use-view-transition) body:has(#banner-wrapper) #navbar > div,
-  .is-theme-transitioning:not(.use-view-transition) body:has(#banner-wrapper) #navbar[data-transparent-mode] > div {
+  .is-theme-transitioning:not(.use-view-transition) #navbar>div,
+  .is-theme-transitioning:not(.use-view-transition) #navbar[data-transparent-mode]>div,
+  .is-theme-transitioning:not(.use-view-transition) #navbar[data-transparent-mode].scrolled>div,
+  .is-theme-transitioning:not(.use-view-transition) body.wallpaper-transparent #navbar>div,
+  .is-theme-transitioning:not(.use-view-transition) body.wallpaper-transparent #navbar[data-transparent-mode]>div,
+  .is-theme-transitioning:not(.use-view-transition) body.wallpaper-transparent #navbar[data-transparent-mode].scrolled>div,
+  .is-theme-transitioning:not(.use-view-transition) #banner-wrapper~* #navbar>div,
+  .is-theme-transitioning:not(.use-view-transition) #banner-wrapper~* #navbar[data-transparent-mode]>div,
+  .is-theme-transitioning:not(.use-view-transition) body:has(#banner-wrapper) #navbar>div,
+  .is-theme-transitioning:not(.use-view-transition) body:has(#banner-wrapper) #navbar[data-transparent-mode]>div {
     transition: none !important;
     backdrop-filter: none !important;
   }
@@ -224,6 +224,7 @@ html {
   .card-base {
     @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg)] transition-colors duration-150;
   }
+
   .card-base-transparent {
     @apply rounded-[var(--radius-large)] overflow-hidden bg-[var(--card-bg-transparent)] backdrop-blur-sm transition-colors duration-150;
   }
@@ -253,7 +254,7 @@ html {
     @apply bg-[var(--card-bg-transparent)] backdrop-blur-sm;
   }
 
-  .wallpaper-transparent #navbar > div {
+  .wallpaper-transparent #navbar>div {
     @apply bg-[var(--card-bg-transparent)] backdrop-blur-sm;
   }
 
@@ -261,15 +262,16 @@ html {
     @apply bg-[var(--card-bg-transparent)] backdrop-blur-sm;
   }
 
-  .wallpaper-transparent ~ * .music-player .mini-player,
-  .wallpaper-transparent ~ * .music-player .expanded-player,
-  .wallpaper-transparent ~ * .music-player .playlist-panel,
+  .wallpaper-transparent~* .music-player .mini-player,
+  .wallpaper-transparent~* .music-player .expanded-player,
+  .wallpaper-transparent~* .music-player .playlist-panel,
   body.wallpaper-transparent .music-player .mini-player,
   body.wallpaper-transparent .music-player .expanded-player,
   body.wallpaper-transparent .music-player .playlist-panel {
     background-color: var(--card-bg-transparent) !important;
     backdrop-filter: blur(8px) !important;
   }
+
   h1,
   h2,
   h3,
@@ -291,61 +293,70 @@ html {
   strong {
     @apply transition-colors duration-150;
   }
+
   .card-shadow {
-    @apply drop-shadow-[0_2px_4px_rgba(0,0,0,0.005)];
+    @apply drop-shadow-[0_2px_4px_rgba(0, 0, 0, 0.005)];
   }
+
   .expand-animation {
-    @apply relative before:ease-out before:duration-75 before:transition-all active:bg-none hover:before:bg-[var(--btn-plain-bg-hover)] active:before:bg-[var(--btn-plain-bg-active)] z-0
-        before:absolute before:rounded-[inherit] before:inset-0 before:scale-[0.85] hover:before:scale-100 before:-z-10;
+    @apply relative before:ease-out before:duration-75 before:transition-all active:bg-none hover:before:bg-[var(--btn-plain-bg-hover)] active:before:bg-[var(--btn-plain-bg-active)] z-0 before:absolute before:rounded-[inherit] before:inset-0 before:scale-[0.85] hover:before:scale-100 before:-z-10;
   }
+
   /* 主题切换时禁用按钮背景色过渡，确保立即更新 */
   .is-theme-transitioning .expand-animation::before {
     transition: transform 75ms ease-out !important;
   }
+
   .is-theme-transitioning .btn-plain {
     transition: color 75ms ease-out !important;
   }
+
   .link {
     @apply transition-colors duration-150 rounded-md p-1 -m-1 expand-animation;
   }
+
   .link-lg {
     @apply transition-colors duration-150 rounded-md p-1.5 -m-1.5 expand-animation;
   }
+
   .float-panel {
     @apply top-[5.25rem] rounded-[var(--radius-large)] overflow-hidden bg-[var(--float-panel-bg)] transition-colors duration-150 shadow-xl dark:shadow-none;
   }
+
   .float-panel-closed {
     @apply -translate-y-1 opacity-0 pointer-events-none;
   }
+
   .search-panel mark {
     @apply bg-transparent text-[var(--primary)];
   }
 
   .btn-card {
-    @apply transition-colors duration-150 flex items-center justify-center bg-[var(--card-bg)] hover:bg-[var(--btn-card-bg-hover)]
-        active:bg-[var(--btn-card-bg-active)];
+    @apply transition-colors duration-150 flex items-center justify-center bg-[var(--card-bg)] hover:bg-[var(--btn-card-bg-hover)] active:bg-[var(--btn-card-bg-active)];
   }
+
   .btn-card.disabled {
     @apply pointer-events-none text-black/10 dark:text-white/10;
   }
+
   .btn-plain {
-    @apply transition-colors duration-150 relative flex items-center justify-center bg-none
-        text-black/75 hover:text-[var(--primary)] dark:text-white/75 dark:hover:text-[var(--primary)];
+    @apply transition-colors duration-150 relative flex items-center justify-center bg-none text-black/75 hover:text-[var(--primary)] dark:text-white/75 dark:hover:text-[var(--primary)];
+
     &:not(.scale-animation) {
       @apply hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)];
     }
+
     &.scale-animation {
       @apply expand-animation;
     }
   }
+
   .btn-regular {
-    @apply transition-colors duration-150 flex items-center justify-center bg-[var(--btn-regular-bg)] hover:bg-[var(--btn-regular-bg-hover)] active:bg-[var(--btn-regular-bg-active)]
-        text-[var(--btn-content)] dark:text-white/75;
+    @apply transition-colors duration-150 flex items-center justify-center bg-[var(--btn-regular-bg)] hover:bg-[var(--btn-regular-bg-hover)] active:bg-[var(--btn-regular-bg-active)] text-[var(--btn-content)] dark:text-white/75;
   }
 
   .link-underline {
-    @apply transition-colors duration-150 underline decoration-2 decoration-dashed decoration-[var(--link-underline)]
-        hover:decoration-[var(--link-hover)] active:decoration-[var(--link-active)] underline-offset-[0.25rem];
+    @apply transition-colors duration-150 underline decoration-2 decoration-dashed decoration-[var(--link-underline)] hover:decoration-[var(--link-hover)] active:decoration-[var(--link-active)] underline-offset-[0.25rem];
   }
 
   .toc-hide,
@@ -361,6 +372,7 @@ html {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
+
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -368,15 +380,19 @@ html {
   .text-90 {
     @apply text-black/90 dark:text-white/90;
   }
+
   .text-75 {
     @apply text-black/75 dark:text-white/75;
   }
+
   .text-50 {
     @apply text-black/50 dark:text-white/50;
   }
+
   .text-30 {
     @apply text-black/30 dark:text-white/30;
   }
+
   .text-25 {
     @apply text-black/25 dark:text-white/25;
   }
@@ -485,19 +501,17 @@ html {
   }
 
   .meta-icon {
-    @apply w-8 h-8 transition-colors duration-150 rounded-md flex items-center justify-center bg-[var(--btn-regular-bg)]
-        text-[var(--btn-content)] mr-2;
+    @apply w-8 h-8 transition-colors duration-150 rounded-md flex items-center justify-center bg-[var(--btn-regular-bg)] text-[var(--btn-content)] mr-2;
   }
+
   .with-divider {
-    @apply before:content-['/'] before:ml-1.5 before:mr-1.5 before:text-[var(--meta-divider)] before:text-sm
-        before:font-medium before:first-of-type:hidden before:transition-colors before:duration-150;
+    @apply before:content-['/'] before:ml-1.5 before:mr-1.5 before:text-[var(--meta-divider)] before:text-sm before:font-medium before:first-of-type:hidden before:transition-colors before:duration-150;
   }
 
   .btn-regular-dark {
-    @apply flex items-center justify-center
-        bg-[oklch(0.45_0.01_var(--hue))] hover:bg-[oklch(0.50_0.01_var(--hue))] active:bg-[oklch(0.55_0.01_var(--hue))]
-        dark:bg-[oklch(0.30_0.02_var(--hue))] dark:hover:bg-[oklch(0.35_0.03_var(--hue))] dark:active:bg-[oklch(0.40_0.03_var(--hue))];
+    @apply flex items-center justify-center bg-[oklch(0.45_0.01_var(--hue))] hover:bg-[oklch(0.50_0.01_var(--hue))] active:bg-[oklch(0.55_0.01_var(--hue))] dark:bg-[oklch(0.30_0.02_var(--hue))] dark:hover:bg-[oklch(0.35_0.03_var(--hue))] dark:active:bg-[oklch(0.40_0.03_var(--hue))];
   }
+
   .btn-regular-dark.success {
     @apply bg-[oklch(0.75_0.14_var(--hue))] dark:bg-[oklch(0.75_0.14_var(--hue))];
   }
@@ -549,8 +563,10 @@ html {
   @apply hover:bg-transparent px-1 py-0.5 overflow-hidden rounded-md transition-all duration-150;
   background-color: var(--_spoiler-mask);
   box-decoration-break: clone;
+
   &:not(:hover) {
     color: var(--_spoiler-mask);
+
     * {
       color: var(--_spoiler-mask);
     }
@@ -613,6 +629,7 @@ html {
 
 /* CSS-only移动端优化 - 避免JavaScript闪烁 */
 @media (max-width: 768px) {
+
   /* 移动端强制列表模式，避免初始化闪烁 */
   #post-list-container {
     display: flex !important;
@@ -638,6 +655,7 @@ html {
 
 /* 桌面端样式 */
 @media (min-width: 769px) {
+
   /* 列表模式下的样式 */
   .post-list-container.list-mode {
     display: flex !important;
@@ -715,6 +733,7 @@ html {
 .post-list-container {
   transition: all 0.3s ease-in-out;
 }
+
 :root:not(.dark) .custom-md spoiler {
   --_spoiler-mask: color-mix(in oklch, var(--primary) 55%, white 45%);
 }
