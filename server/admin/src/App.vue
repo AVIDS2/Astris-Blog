@@ -290,7 +290,8 @@ body {
   background: var(--wf-card) !important;
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-  height: 60px !important;
+  height: calc(60px + env(safe-area-inset-top, 0px)) !important;
+  padding-top: env(safe-area-inset-top, 0px) !important;
   transition: background 0.3s;
   position: sticky;
   top: 0;
@@ -374,6 +375,7 @@ body {
   
   .content-wrapper {
     padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   }
   
   /* 修复移动端导航栏重叠 */
@@ -386,8 +388,17 @@ body {
   }
   
   .main-content-area {
-    margin-top: 60px !important;
+    margin-top: calc(60px + env(safe-area-inset-top, 0px)) !important;
   }
+}
+
+/* 抽屉菜单安全区域 */
+:deep(.n-drawer-header) {
+  padding-top: calc(16px + env(safe-area-inset-top, 0px)) !important;
+}
+
+:deep(.n-drawer-body-content-wrapper) {
+  padding-bottom: env(safe-area-inset-bottom, 0px) !important;
 }
 
 /* 页面过渡 */

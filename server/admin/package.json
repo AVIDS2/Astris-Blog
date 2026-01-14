@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/android": "^8.0.1",
+    "@capacitor/cli": "^7.4.5",
+    "@capacitor/core": "^8.0.1",
     "@vicons/ionicons5": "^0.13.0",
     "@vueuse/core": "^14.1.0",
     "axios": "^1.13.2",
