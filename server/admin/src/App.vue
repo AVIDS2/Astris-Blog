@@ -317,8 +317,7 @@ body {
   background: var(--wf-card) !important;
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-  height: calc(60px + var(--status-bar-height, 0px)) !important;
-  padding-top: var(--status-bar-height, 0px) !important;
+  height: 60px !important;
   transition: background 0.3s;
   position: sticky;
   top: 0;
@@ -402,26 +401,27 @@ body {
   
   .content-wrapper {
     padding: 16px;
-    padding-bottom: 16px;
   }
   
-  /* 修复移动端导航栏重叠 */
+  /* 修复移动端导航栏重叠 - 添加固定 40px 顶部空间 */
   .app-header {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
     z-index: 1000 !important;
+    height: 100px !important;  /* 60px 导航 + 40px 状态栏空间 */
+    padding-top: 40px !important;  /* 状态栏空间 */
   }
   
   .main-content-area {
-    margin-top: calc(60px + var(--status-bar-height, 0px)) !important;
+    margin-top: 100px !important;  /* 匹配导航栏高度 */
   }
 }
 
 /* 抽屉菜单安全区域 */
 :deep(.n-drawer-header) {
-  padding-top: calc(16px + env(safe-area-inset-top, 0px)) !important;
+  padding-top: 56px !important;  /* 40px 状态栏 + 16px 原有 padding */
 }
 
 :deep(.n-drawer-body-content-wrapper) {
