@@ -157,6 +157,38 @@ docker-compose up -d --build
 
 ---
 
+## 📱 Android APK 打包
+
+管理后台支持打包为 Android APK，方便在手机上管理博客。
+
+### 前置要求
+- [Android Studio](https://developer.android.com/studio)
+- Android SDK 35+
+
+### 打包步骤
+
+```bash
+# 1. 进入管理后台目录
+cd server/admin
+
+# 2. 构建前端
+npm run build
+
+# 3. 同步到 Android 项目
+npx cap sync android
+
+# 4. 用 Android Studio 打开
+npx cap open android
+```
+
+在 Android Studio 中，点击 **Build → Build APK(s)** 即可生成 APK 文件。
+
+生成的 APK 位于：`server/admin/android/app/build/outputs/apk/debug/app-debug.apk`
+
+> **注意**：APK 采用远程模式，会直接访问服务器上的管理后台。修改代码后需要推送到服务器并重新构建 Docker，APK 刷新即可看到更新。
+
+---
+
 ## 📁 目录结构
 
 ```text
