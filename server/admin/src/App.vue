@@ -20,10 +20,15 @@ import {
 } from 'naive-ui'
 import { useAuthStore } from './stores/auth'
 import adminAvatar from './assets/admin-avatar.png'
+import { Capacitor } from '@capacitor/core'
+import { StatusBar, Style } from '@capacitor/status-bar'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+
+// 状态栏高度（用于移动端安全区域）
+const statusBarHeight = ref(0)
 
 const isDark = ref(localStorage.getItem('admin-theme') !== 'light')
 
@@ -119,10 +124,32 @@ function handleUserSelect(key: string) {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   if (authStore.isLoggedIn) authStore.fetchUser()
   // 初始应用主题类
   updateThemeClass()
+  
+  // 初始化状态栏（仅在 Capacitor 原生环境）
+  if (Capacitor.isNativePlatform()) {
+    try {
+      // 设置状态栏样式
+      await StatusBar.setStyle({ style: isDark.value ? Style.Dark : Style.Light })
+      await StatusBar.setOverlaysWebView({ overlay: true })
+      
+      // Android 状态栏高度通常在 24-48dp 之间，设置一个较大的值以适配各种设备
+      statusBarHeight.value = 48
+      
+      // 设置 CSS 变量
+      document.documentElement.style.setProperty('--status-bar-height', `${statusBarHeight.value}px`)
+    } catch (e) {
+      console.log('StatusBar not available:', e)
+      // 即使失败也设置一个合理的默认值
+      document.documentElement.style.setProperty('--status-bar-height', '48px')
+    }
+  } else {
+    // 非原生环境，设置为 0
+    document.documentElement.style.setProperty('--status-bar-height', '0px')
+  }
 })
 
 const themeClass = computed(() => isDark.value ? 'dark-mode' : 'light-mode')
@@ -290,8 +317,8 @@ body {
   background: var(--wf-card) !important;
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-  height: calc(60px + env(safe-area-inset-top, 0px)) !important;
-  padding-top: env(safe-area-inset-top, 0px) !important;
+  height: calc(60px + var(--status-bar-height, 0px)) !important;
+  padding-top: var(--status-bar-height, 0px) !important;
   transition: background 0.3s;
   position: sticky;
   top: 0;
@@ -375,7 +402,7 @@ body {
   
   .content-wrapper {
     padding: 16px;
-    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 16px;
   }
   
   /* 修复移动端导航栏重叠 */
@@ -388,7 +415,7 @@ body {
   }
   
   .main-content-area {
-    margin-top: calc(60px + env(safe-area-inset-top, 0px)) !important;
+    margin-top: calc(60px + var(--status-bar-height, 0px)) !important;
   }
 }
 
