@@ -199,7 +199,12 @@ watch(isDark, updateThemeClass)
 
           <!-- 移动端侧边抽屉 -->
           <n-drawer v-model:show="sidebarOpen" :width="280" placement="left" class="mobile-drawer">
-            <n-drawer-content title="导航菜单" closable>
+            <n-drawer-content 
+              title="导航菜单" 
+              closable
+              :header-style="{ paddingTop: '56px' }"
+              :body-content-style="{ paddingTop: '0' }"
+            >
               <n-menu
                 :value="selectedKey"
                 :options="menuOptions"
@@ -419,13 +424,17 @@ body {
   }
 }
 
-/* 抽屉菜单安全区域 */
-:deep(.n-drawer-header) {
-  padding-top: 56px !important;  /* 40px 状态栏 + 16px 原有 padding */
+/* 抽屉菜单安全区域 - 移动端 */
+.mobile-drawer :deep(.n-drawer-content) {
+  padding-top: 40px !important;
+}
+
+.mobile-drawer :deep(.n-drawer-header) {
+  margin-top: 0 !important;
 }
 
 :deep(.n-drawer-body-content-wrapper) {
-  padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+  padding-bottom: 16px !important;
 }
 
 /* 页面过渡 */
