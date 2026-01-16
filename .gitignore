@@ -25,11 +25,14 @@ __pycache__/
 .coverage
 htmlcov/
 
-# ===== 数据库与上传文件 =====
+# ===== 数据库（不提交） =====
 *.db
 *.sqlite3
 /data/
-/uploads/
+
+# ===== 上传文件（提交图片，不提交缩略图缓存）=====
+/uploads/banner-thumbnails/
+/server/uploads/
 
 # ===== 环境配置（敏感信息）=====
 .env
