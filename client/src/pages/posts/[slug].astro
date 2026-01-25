@@ -5,7 +5,7 @@
 export const prerender = false;
 
 import MainGridLayout from "../../layouts/MainGridLayout.astro";
-import { fetchPost, fetchComments, type ApiPost, type ApiComment } from "../../utils/api-client";
+import { fetchPost, fetchComments, type ApiPost, type ApiComment, getResourceUrl } from "../../utils/api-client";
 import { Marked } from "marked";
 import { markedHighlight } from "marked-highlight";
 import hljs from "highlight.js";
@@ -120,7 +120,7 @@ const formatDate = (dateStr: string) => {
 			{post.cover_image && (
 				<div class="mb-8 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800">
 					<img 
-						src={post.cover_image} 
+						src={getResourceUrl(post.cover_image)} 
 						alt={post.title}
 						class="w-full h-auto object-cover"
 						loading="lazy"

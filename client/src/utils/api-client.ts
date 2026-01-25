@@ -8,12 +8,27 @@
 const isDev = import.meta.env?.DEV ?? (typeof process !== 'undefined' && process.env.NODE_ENV === 'development');
 const isSSR = typeof window === 'undefined';
 
-// SSR 构建时需要完整 URL，客户端可以用相对路径
+// SSR 构建时需要完整 URL（为了 fetch 数据），客户端生产环境始终使用相对路径
 export const API_BASE = isSSR
-    ? (process.env.API_URL || 'http://localhost:8000')  // SSR/构建时
+    ? (process.env.API_URL || 'http://localhost:8000')  // SSR/构建时：内部访问
     : (isDev
-        ? `http://${window.location.hostname}:8000`    // 客户端开发环境：动态获取当前 IP/域名
+        ? `http://${window.location.hostname}:8000`    // 客户端开发环境：动态获取
         : '');                                         // 客户端生产环境：相对路径
+
+/**
+ * 获取资源完整 URL（用于图片 src 等）
+ * 在生产环境下返回相对路径，在开发环境下返回带端口的完整路径
+ */
+export function getResourceUrl(path: string | null): string {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    
+    // 如果路径不以 / 开头，补上 /
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+    
+    // 生产环境下返回相对路径，开发环境下返回带 API_BASE 的路径
+    return isDev ? `${API_BASE}${normalizedPath}` : normalizedPath;
+}
 
 export interface ApiPost {
     id: number;

@@ -5,7 +5,7 @@ import { siteConfig } from "../config";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
-import { API_BASE } from "../utils/api-client";
+import { API_BASE, getResourceUrl } from "../utils/api-client";
 
 // 检查相册页面是否启用
 if (!siteConfig.featurePages.albums) {
@@ -63,7 +63,7 @@ try {
               <div class="aspect-[4/3] overflow-hidden bg-neutral-100 dark:bg-neutral-700">
                 {album.cover ? (
                   <img 
-                    src={`${API_BASE}${album.cover}`}
+                    src={getResourceUrl(album.cover)}
                     alt={album.name}
                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     loading="lazy"

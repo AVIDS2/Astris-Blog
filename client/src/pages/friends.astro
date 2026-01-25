@@ -35,20 +35,14 @@ interface FriendItem {
 // 从 API 获取友链，失败时使用本地配置
 async function getFriendsFromApi(): Promise<FriendItem[]> {
 	try {
-		// 判断是否在本地运行（开发或预览模式）
-		const isLocal = import.meta.env.DEV || 
-			(typeof process !== 'undefined' && process.env.NODE_ENV !== 'production') ||
-			siteConfig.siteURL.includes('localhost') ||
-			siteConfig.siteURL.includes('127.0.0.1');
+		const isSSR = typeof window === 'undefined';
+		const API_BASE = isSSR 
+			? (process.env.API_URL || 'http://localhost:8000') 
+			: '';
+
+		console.log('[Friends] Fetching from:', `${API_BASE}/api/friends`);
 		
-		// 本地环境使用 localhost:8000，生产环境使用站点 URL
-		const apiUrl = isLocal 
-			? 'http://localhost:8000/api/friends'
-			: `${siteConfig.siteURL.replace(/\/$/, '')}/api/friends`;
-		
-		console.log('[Friends] Fetching from:', apiUrl);
-		
-		const res = await fetch(apiUrl, { 
+		const res = await fetch(`${API_BASE}/api/friends`, { 
 			signal: AbortSignal.timeout(5000) 
 		});
 		

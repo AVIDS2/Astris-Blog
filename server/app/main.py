@@ -113,16 +113,25 @@ client_public_images = os.path.join(BASE_DIR, "client", "public", "images")
 if os.path.exists(client_public_images):
     app.mount("/images", StaticFiles(directory=client_public_images), name="images")
 
-# 静态文件服务（博客前端）- 这是最后的兜底处理
-# 兼容性检查：尝试 dist 或 dist/client (某些构架结构可能不同)
+# 静态文件服务（博客前端）
 client_dist = os.path.join(BASE_DIR, "client", "dist")
-if not os.path.exists(os.path.join(client_dist, "index.html")):
-    client_dist = os.path.join(client_dist, "client")
 
-if os.path.exists(client_dist):
-    app.mount("/", StaticFiles(directory=client_dist, html=True), name="client")
+# 1. 挂载 Pagefind 搜索索引 (通常在 dist/pagefind)
+pagefind_dir = os.path.join(client_dist, "pagefind")
+if os.path.exists(pagefind_dir):
+    app.mount("/pagefind", StaticFiles(directory=pagefind_dir), name="pagefind")
+    print(f"✅ 已挂载搜索索引: {pagefind_dir}")
+
+# 2. 挂载前端生成的静态资源 (在 dist/client)
+client_client_dist = os.path.join(client_dist, "client")
+if os.path.exists(client_client_dist):
+    app.mount("/", StaticFiles(directory=client_client_dist, html=True), name="client")
+    print(f"✅ 已挂载前端静态目录: {client_client_dist}")
+elif os.path.exists(client_dist):
+    app.mount("/", StaticFiles(directory=client_dist, html=True), name="client_fallback")
+    print(f"✅ 已挂载前端静态目录(回退): {client_dist}")
 else:
-    print(f"❌ 严重错误: 无法找到前端构建目录，路径检查了 /dist 和 /dist/client")
+    print(f"⚠️ 警告: 未找到前端静态目录")
 
 
 @app.get("/api/health")

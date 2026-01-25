@@ -60,10 +60,11 @@ interface Props {
 const getBannerImages = async () => {
 	// 优先从后端 API 获取动态 Banner 图片列表
 	try {
-		const API_BASE = import.meta.env.DEV 
-			? 'http://localhost:8000' 
+		const isSSR = typeof window === 'undefined';
+		const API_BASE_URL = isSSR 
+			? (process.env.API_URL || 'http://localhost:8000') 
 			: '';
-		const response = await fetch(`${API_BASE}/api/banner/public`);
+		const response = await fetch(`${API_BASE_URL}/api/banner/public`);
 		if (response.ok) {
 			const data = await response.json();
 			if (data.desktop?.length > 0 || data.mobile?.length > 0) {

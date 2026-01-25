@@ -5,7 +5,7 @@ import { siteConfig } from "../../../config";
 import I18nKey from "../../../i18n/i18nKey";
 import { i18n } from "../../../i18n/translation";
 import MainGridLayout from "../../../layouts/MainGridLayout.astro";
-import { API_BASE } from "../../../utils/api-client";
+import { API_BASE, getResourceUrl } from "../../../utils/api-client";
 
 // 检查相册页面是否启用
 if (!siteConfig.featurePages.albums) {
@@ -85,10 +85,8 @@ if (!album) {
         <div class="photo-gallery grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {album.photos.map((photo) => {
             // 使用缩略图，如果没有则回退到原图
-            const thumbUrl = photo.thumbnail 
-              ? `${API_BASE}${photo.thumbnail}`
-              : `${API_BASE}${photo.url}`;
-            const fullUrl = `${API_BASE}${photo.url}`;
+            const thumbUrl = getResourceUrl(photo.thumbnail || photo.url);
+            const fullUrl = getResourceUrl(photo.url);
             
             return (
               <figure class="photo-item group relative overflow-hidden rounded-lg aspect-square bg-gray-100 dark:bg-gray-800">

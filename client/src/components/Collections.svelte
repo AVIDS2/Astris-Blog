@@ -4,7 +4,6 @@
     import { fade, fly } from 'svelte/transition';
 
     // API 地址：开发环境用 localhost，生产用相对路径
-    // API 地址：动态适配当前主机地址，解决移动端访问问题
     const API_BASE = import.meta.env.DEV 
         ? `http://${typeof window !== 'undefined' ? window.location.hostname : 'localhost'}:8000` 
         : '';
@@ -54,10 +53,11 @@
 
     function fixUrl(url) {
         if (!url) return '';
-        if (import.meta.env.DEV && typeof window !== 'undefined' && url.includes('localhost:8000')) {
-            return url.replace('localhost', window.location.hostname);
-        }
-        return url;
+        if (url.startsWith('http')) return url;
+        
+        // 如果是相对路径，且在开发环境下，拼接 API_BASE
+        const normalizedPath = url.startsWith('/') ? url : `/${url}`;
+        return import.meta.env.DEV ? `${API_BASE}${normalizedPath}` : normalizedPath;
     }
 
     onMount(async () => {
