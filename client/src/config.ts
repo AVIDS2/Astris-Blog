@@ -170,7 +170,7 @@ export const siteConfig: SiteConfig = {
 	generateOgImages: false, // 启用生成OpenGraph图片功能,注意开启后要渲染很长时间，不建议本地调试的时候开启
 	favicon: [
 		{
-			src: '/images/avatar/Dwill_logo.png',
+			src: '/images/avatar/Alice.jpg', // 同步更新图标
 			sizes: '32x32',
 		}
 	],
@@ -286,7 +286,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "/images/avatar/LuFei.jpeg", // 使用你的路飞头像
+	avatar: "/images/avatar/Alice.jpg", // 更新为 Alice 头像
 	name: "乐活",
 	bio: "更进一步",
 	typewriter: {

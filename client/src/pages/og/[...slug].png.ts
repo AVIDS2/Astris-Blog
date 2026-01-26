@@ -107,7 +107,12 @@ export async function GET({
 		await fetchNotoSansSCFonts();
 
 	// Avatar + icon: still read from disk (small assets)
-	const avatarBuffer = fs.readFileSync(`./src/${profileConfig.avatar}`);
+	// 如果路径以 / 开头，说明在 public 目录下，需要移除开头的 / 并拼接 ./public
+	const avatarUrl = profileConfig.avatar || "/images/avatar/Alice.jpg";
+	const avatarPath = avatarUrl.startsWith('/')
+		? `./public${avatarUrl}`
+		: `./src/${avatarUrl}`;
+	const avatarBuffer = fs.readFileSync(avatarPath);
 	const avatarBase64 = `data:image/png;base64,${avatarBuffer.toString("base64")}`;
 
 	let iconPath = "./public/favicon/favicon.ico";
