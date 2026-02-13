@@ -30,9 +30,8 @@ htmlcov/
 *.sqlite3
 /data/
 
-# ===== 上传文件（提交图片，不提交缩略图缓存）=====
+# ===== 上传文件（不提交缩略图缓存）=====
 /uploads/banner-thumbnails/
-/server/uploads/
 
 # ===== 环境配置（敏感信息）=====
 .env

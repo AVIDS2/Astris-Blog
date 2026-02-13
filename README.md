@@ -157,6 +157,32 @@ docker-compose up -d --build
 
 ---
 
+## 🚚 服务器迁移
+
+迁移到新服务器时，以下文件**不在 Git 中**，需要手动拷贝：
+
+| 文件 | 路径 | 说明 |
+|------|------|------|
+| 数据库 | `server\blog.db` | 文章、评论、用户、分类、标签等全部核心数据 |
+| 环境配置 | `server\.env` | JWT 密钥、管理员密码、CORS 域名 |
+| 上传文件 | `uploads\` | 相册照片、缩略图、Banner 缓存 |
+
+```bash
+# ===== 旧服务器 =====
+docker compose down
+tar czf blog-migrate.tar.gz server/blog.db server/.env uploads/
+scp blog-migrate.tar.gz user@新VPS:/path/to/
+
+# ===== 新服务器 =====
+git clone <仓库地址> Astris-Blog && cd Astris-Blog
+tar xzf /path/to/blog-migrate.tar.gz
+# 检查 server/.env 中的 CORS_ORIGINS 是否需要改为新域名
+docker network create backend
+docker compose up -d --build
+```
+
+> ⚠️ 迁移前务必 `docker compose down`，避免数据库写入导致损坏。
+
 ## 📱 Android APK 打包
 
 管理后台支持打包为 Android APK，方便在手机上管理博客。
