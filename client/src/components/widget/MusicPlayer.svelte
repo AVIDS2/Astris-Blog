@@ -821,63 +821,12 @@ onDestroy(() => {
 }
 @media (max-width: 768px) {
     .music-player {
-        max-width: 280px;
-        /*left: 8px !important;*/
-        bottom: 8px !important;
-        right: 8px !important;
-    }
-    .music-player.expanded {
-        width: calc(100vw - 16px);
-        max-width: none;
-        /*left: 8px !important;*/
-        right: 8px !important;
-    }
-    .playlist-panel {
-        width: calc(100vw - 16px) !important;
-        /*left: 8px !important;*/
-        right: 8px !important;
-        max-width: none;
-    }
-    .controls {
-        gap: 8px;
-    }
-    .controls button {
-        width: 36px;
-        height: 36px;
-    }
-    .controls button:nth-child(3) {
-        width: 44px;
-        height: 44px;
+        display: none !important;
     }
 }
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .music-player {
-        max-width: 260px;
-    }
-    .song-title {
-        font-size: 14px;
-    }
-    .song-artist {
-        font-size: 12px;
-    }
-    .controls {
-        gap: 6px;
-        margin-bottom: 12px;
-    }
-    .controls button {
-        width: 32px;
-        height: 32px;
-    }
-    .controls button:nth-child(3) {
-        width: 40px;
-        height: 40px;
-    }
-    .playlist-item {
-        padding: 8px 12px;
-    }
-    .playlist-item .w-10 {
-        width: 32px;
-        height: 32px;
+        display: none !important;
     }
 }
 @keyframes slide-up {

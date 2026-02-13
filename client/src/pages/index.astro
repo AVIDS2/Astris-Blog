@@ -47,7 +47,7 @@ try {
 			<p class="text-sm text-gray-400 mt-2">在管理后台发布你的第一篇文章吧！</p>
 		</div>
 	) : (
-		<div id="post-list-container" class="flex flex-col gap-4">
+		<div id="post-list-container" class="flex flex-col gap-4 js-initialized">
 			{posts.map((post, index) => (
 				<ApiPostCard
 					post={post}
