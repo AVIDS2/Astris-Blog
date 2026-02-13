@@ -17,6 +17,7 @@ let showDialog = false;
 let dialogTimer = null;
 let idleTimer = null;
 let isWidgetVisible = true;
+let isMobile = false;
 
 const DIALOG_DURATION = 4000;
 const IDLE_INTERVAL = 30000;
@@ -185,7 +186,9 @@ function handleUserActivity() {
 onMount(() => {
     if (!pioConfig.enable) return;
 
-    if (pioConfig.hiddenOnMobile && window.matchMedia("(max-width: 1280px)").matches) {
+    // 移动端检测：768px 以下完全不初始化
+    if (window.matchMedia("(max-width: 768px)").matches) {
+        isMobile = true;
         return;
     }
 
@@ -216,7 +219,7 @@ onDestroy(() => {
 });
 </script>
 
-{#if pioConfig.enable}
+{#if pioConfig.enable && !isMobile}
     <!-- 看板娘主体：用 CSS class 控制显隐，不销毁 DOM -->
     <div
         class="live2d-container {pioConfig.position || 'right'}"
