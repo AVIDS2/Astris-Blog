@@ -859,8 +859,8 @@ body.no-banner-mode .absolute.w-full.z-30 {
     }
 }
 
-/* 移动端无侧边栏布局优化 */
-@media (max-width: 768px) {
+/* 移动端/平板无侧边栏布局优化 */
+@media (max-width: 1279px) {
     .mobile-no-sidebar {
         display: block !important;
         width: 100% !important;
@@ -880,23 +880,23 @@ body.no-banner-mode .absolute.w-full.z-30 {
         margin: 0 !important;
     }
     
-    /* 修复双侧边栏模式在移动端的布局问题 */
+    /* 修复双侧边栏模式在移动端/平板的布局问题 */
     .mobile-both-sidebar {
-        /* 确保在移动端使用单列布局 */
+        /* 确保使用单列布局 */
         grid-template-columns: 1fr !important;
         /* 确保左右padding对称 */
         padding-left: 0.5rem !important;
         padding-right: 0.5rem !important;
     }
     
-    /* 确保移动端主内容区域居中且全宽 */
+    /* 确保主内容区域居中且全宽 */
     .mobile-both-sidebar main {
         grid-column: 1 / -1 !important;
         width: 100% !important;
         margin: 0 auto !important;
     }
     
-    /* 移动端footer也要居中 */
+    /* footer也要居中 */
     .mobile-both-sidebar .footer {
         grid-column: 1 / -1 !important;
     }

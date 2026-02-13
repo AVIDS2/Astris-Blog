@@ -152,8 +152,8 @@ onDestroy(() => {
     pointer-events: auto;
 }
 
-/* 移动端和平板彻底隐藏 */
-@media (max-width: 1280px) {
+/* 手机端彻底隐藏 */
+@media (max-width: 768px) {
     .live2d-container {
         display: none !important;
     }

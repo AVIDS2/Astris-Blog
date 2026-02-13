@@ -42,11 +42,7 @@
         min-height: calc(100vh - 5.5rem) !important;
     }
 
-    /* 2. 交互组件优化 */
-    .live2d-container {
-        display: none !important;
-        /* 移动端完全隐藏看板娘 */
-    }
+    /* 2. 交互组件优化 - Live2D由组件自身CSS控制（仅768px以下隐藏） */
 
     /* 3. Banner 文字适配 */
     .banner-text-overlay {

@@ -4,8 +4,8 @@
  * 解决移动端文章列表初始化时的闪烁和间距问题
  */
 
-/* 关键：页面加载时立即应用正确的移动端样式 */
-@media (max-width: 768px) {
+/* 关键：页面加载时立即应用正确的移动端/平板样式 */
+@media (max-width: 1279px) {
   /* 强制在初始化前隐藏内容，避免闪烁 */
   #post-list-container:not(.js-initialized) {
     opacity: 0;
