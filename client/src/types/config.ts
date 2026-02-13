@@ -435,6 +435,14 @@ export type PioConfig = {
 		skin?: [string, string]; // 换装提示 [切换前, 切换后]
 		close?: string; // 关闭提示
 		link?: string; // 关于链接
+		timeGreetings?: {
+			morning?: string[]; // 早上问候 (6:00-10:59)
+			noon?: string[]; // 中午问候 (11:00-13:59)
+			afternoon?: string[]; // 下午问候 (14:00-17:59)
+			evening?: string[]; // 晚上问候 (18:00-22:59)
+			lateNight?: string[]; // 深夜问候 (23:00-5:59)
+		};
+		idle?: string[]; // 空闲时随机对话
 		custom?: Array<{
 			selector: string; // CSS选择器
 			type: "read" | "link"; // 类型
